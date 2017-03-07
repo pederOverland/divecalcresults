@@ -6,7 +6,6 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
     _this.state = { data: {} };
     _this.socket = io("/divecalc");
     _this.socket.on("divecalc", function (data) {
-      console.log(data);
       _this.setState({ data: data });
     });return _this;
   }_createClass(Scoreboard, [{ key: "componentWillUnmount", value: function componentWillUnmount()
@@ -14,6 +13,11 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
       this.socket.off("divecalc");
     } }, { key: "render", value: function render()
     {
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+        delete this.timeout;
+      }
+      //this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
       var data = this.state.data;
       var diver = data.diver;
       var event = data.event;
@@ -31,12 +35,16 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
                   event.name),
 
                 _react2.default.createElement("div", { className: "description" },
-                  startlist ? "Startliste" : "Resultat etter runde " + event.round)),
+                  startlist ?
+                  "Startliste" :
+                  "Resultat etter runde " + event.round)),
 
 
               results.map(function (r, i) {return (
                   _react2.default.createElement("div", { className: "resultline", key: i },
-                    _react2.default.createElement("div", { className: "position" }, startlist ? r.position : r.rank),
+                    _react2.default.createElement("div", { className: "position" },
+                      startlist ? r.position : r.rank),
+
                     _react2.default.createElement("div", { className: "name" }, r.name),
                     !startlist && _react2.default.createElement("div", { className: "points" }, r.result)));}),
 

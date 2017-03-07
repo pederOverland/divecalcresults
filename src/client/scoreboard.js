@@ -17,7 +17,7 @@ export default class Scoreboard extends React.Component {
       clearTimeout(this.timeout);
       delete this.timeout;
     }
-    this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
+    //this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
     const data = this.state.data;
     const diver = data.diver;
     const event = data.event;

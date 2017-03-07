@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon node_modules/babel-cli/bin/babel-node.js -- src/index.js",
-    "electron": "babel src --out-dir server && babel -o electron.run.js electron.js"
+    "electron": "babel src --out-dir server && babel -o electron.run.js electron.js",
+    "server": "babel src --out-dir server && nodemon server/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "koa": "^2.0.1",
     "koa-socket": "^4.4.0",
     "koa-static": "^3.0.0",
+    "node-sass": "^4.5.0",
     "nodemon": "^1.11.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",

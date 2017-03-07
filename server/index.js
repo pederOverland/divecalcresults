@@ -11,7 +11,6 @@ app.use((0, _koaStatic2.default)("./build"));
 io.attach(app);
 
 io.on('connection', function (ctx, data) {
-  console.log('connect');
 });
 
 var server = _net2.default.createServer(function (socket) {

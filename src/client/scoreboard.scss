@@ -12,12 +12,23 @@ body {
     font-family: roboto;
 }
 
+        .position {
+            display: inline-block;
+            background: rgb(251, 197, 037);
+            height: 30px;
+            width: 30px;
+            text-align: center;
+            line-height: 30px;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
 .standings {
     -webkit-app-region: drag;
     width: 70vw;
     position: absolute;
     left: 15vw;
-    bottom: 10vh;
+    bottom: 5vh;
     .standingsHeader {
         background: linear-gradient(to right, rgba(80, 153, 178, .8), rgba(80, 153, 178, .4));
         padding: 10px 20px;
@@ -43,15 +54,6 @@ body {
         display: flex;
         height: 30px;
         align-items: center;
-        .position {
-            background: rgb(251, 197, 037);
-            height: 30px;
-            width: 30px;
-            text-align: center;
-            line-height: 30px;
-            font-size: 20px;
-            margin-right: 10px;
-        }
         .name{
             flex: 1;
         }
@@ -64,11 +66,11 @@ body {
     width: 80vw;
     margin: 0 10vw;
     position: absolute;
-    bottom: 10px;
+    bottom: 5vh;
     .header {
         font-size: 1.1em;
-        background: rgba(240, 248, 255, 0.8);
-        padding: 2px $outer-padding;
+        background: linear-gradient(to right, rgba(80, 153, 178, .8), rgba(80, 153, 178, .4));
+        padding: 0 $outer-padding;
         .position {
             margin-right: $inner-padding;
         }
