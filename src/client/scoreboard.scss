@@ -1,0 +1,105 @@
+$outer-padding: 20px;
+$inner-padding: 10px;
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+* {
+    box-sizing: border-box;
+}
+
+body {
+    //background: url("/img_5269.jpg") no-repeat;
+    //background-size: cover;
+    font-size: 18px;
+    font-family: roboto;
+}
+
+.standings {
+    -webkit-app-region: drag;
+    width: 70vw;
+    position: absolute;
+    left: 15vw;
+    bottom: 10vh;
+    .standingsHeader {
+        background: linear-gradient(to right, rgba(80, 153, 178, .8), rgba(80, 153, 178, .4));
+        padding: 10px 20px;
+        color: white;
+        .competition{
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+        .description{
+            font-size: 1.1em;
+        }
+    }
+    .standingsFooter{
+        background: linear-gradient(to right, rgba(80, 153, 178, .8), rgba(80, 153, 178, .4));
+        padding: 4px 20px;
+        color: white;
+        margin-top: 4px;
+    }
+    .resultline {
+        background: linear-gradient(to right, rgba(255, 255, 255, .9), rgba(255, 255, 255, .6));
+        padding: 0 20px;
+        margin-top: 4px;
+        display: flex;
+        height: 30px;
+        align-items: center;
+        .position {
+            background: rgb(251, 197, 037);
+            height: 30px;
+            width: 30px;
+            text-align: center;
+            line-height: 30px;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .name{
+            flex: 1;
+        }
+    }
+}
+
+.dive,
+.awards {
+    -webkit-app-region: drag;
+    width: 80vw;
+    margin: 0 10vw;
+    position: absolute;
+    bottom: 10px;
+    .header {
+        font-size: 1.1em;
+        background: rgba(240, 248, 255, 0.8);
+        padding: 2px $outer-padding;
+        .position {
+            margin-right: $inner-padding;
+        }
+    }
+    .data {
+        display: flex;
+        flex-wrap: wrap;
+        .item {
+            background: rgba(255, 255, 255, .8);
+            margin-top: 4px;
+            padding: 4px $outer-padding 4px $inner-padding;
+            width: 50%;
+            display: flex;
+            justify-content: space-between;
+            &:nth-child(odd) {
+                padding: 4px $inner-padding 4px $outer-padding;
+                width: calc(50% - 4px);
+                margin-right: 4px;
+            }
+        }
+    }
+}
+
+.awards .data {
+    .item {
+        justify-content: space-around;
+    }
+    &.judgeAwards {
+        margin-top: 4px;
+        background: rgba(255, 255, 255, .8);
+        padding: 4px 0;
+        justify-content: space-around;
+    }
+}

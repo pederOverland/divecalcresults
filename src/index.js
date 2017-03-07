@@ -11,15 +11,13 @@ app.use(serve("./build"));
 io.attach(app);
 
 io.on('connection', (ctx, data) => {
-  console.log('connect')
 })
 
 const server = net.createServer(socket => {
   socket.write("Echo server\r\n");
   socket.pipe(socket);
   socket.on("data", function(data) {
-    const result = data.toString("utf-8");
-    console.log(result.split(/\n/));
+    const result = JSON.parse(data.toString("utf-8"));
     io.broadcast('divecalc', result);
   });
 });

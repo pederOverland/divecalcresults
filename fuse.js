@@ -4,16 +4,12 @@ var FuseBox = fsbx.FuseBox;
 const fuse = FuseBox.init({
   homeDir: "./src/client",
   outFile: "./build/bundle.js",
+  sourcemaps: true,
   plugins: [
-    fsbx.BabelPlugin({
-      config: {
-        sourceMaps: true,
-        presets: ["latest"],
-        plugins: [["transform-react-jsx"]]
-      }
-    })
+    fsbx.BabelPlugin(),
+    [fsbx.SassPlugin(),
+    fsbx.CSSPlugin()]
   ]
 });
 
-
-fuse.bundle(">index.js", {httpServer: false})
+fuse.devServer(">index.js")
