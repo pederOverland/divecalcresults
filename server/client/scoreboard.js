@@ -3,7 +3,7 @@
 Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component);
   function Scoreboard(props) {_classCallCheck(this, Scoreboard);var _this = _possibleConstructorReturn(this, (Scoreboard.__proto__ || Object.getPrototypeOf(Scoreboard)).call(this,
     props));
-    _this.state = { data: {} };
+    _this.state = { data: startList };
     _this.socket = io("/divecalc");
     _this.socket.on("divecalc", function (data) {
       _this.setState({ data: data });

@@ -6,17 +6,17 @@ $inner-padding: 10px;
 }
 
 body {
-    font-size: 18px;
+    font-size: 28px;
     font-family: roboto;
 }
 
         .position {
             display: inline-block;
             background: rgb(251, 197, 037);
-            height: 30px;
-            width: 30px;
+            height: 36px;
+            width: 36px;
             text-align: center;
-            line-height: 30px;
+            line-height: 36px;
             font-size: 20px;
             margin-right: 10px;
         }
@@ -50,7 +50,7 @@ body {
         padding: 0 20px;
         margin-top: 4px;
         display: flex;
-        height: 30px;
+        height: 36px;
         align-items: center;
         .name{
             flex: 1;
@@ -66,11 +66,12 @@ body {
     position: absolute;
     bottom: 5vh;
     .header {
-        font-size: 1.1em;
+        font-size: 1em;
         background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
         padding: 0 $outer-padding;
         .position {
             margin-right: $inner-padding;
+	    font-size: 1em;
         }
     }
     .data {
