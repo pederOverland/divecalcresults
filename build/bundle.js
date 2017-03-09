@@ -87,12 +87,13 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
           if (size > 10) {
             var start = (this.state.slice - 1) * 10;
             results = results.slice(start, start + 10);
-            if (size > start + 10) {
-              this.timeout = setTimeout(
-              function () {return _this2.setState({ slice: _this2.state.slice + 1 });}.bind(this),
-              6000);
-
+            if (start > size) {
+              return false;
             }
+            this.timeout = setTimeout(
+            function () {return _this2.setState({ slice: _this2.state.slice + 1 });}.bind(this),
+            6000);
+
           }
           return (
             _react2.default.createElement("div", { className: "standings" },

@@ -28,16 +28,17 @@ export default class Scoreboard extends React.Component {
         let results = startlist
           ? event.results.sort((a, b) => a.position - b.position)
           : event.results;
-          const size = results.length;
+        const size = results.length;
         if (size > 10) {
           const start = (this.state.slice - 1) * 10;
           results = results.slice(start, start + 10);
-          if (size > start + 10) {
-            this.timeout = setTimeout(
-              (() => this.setState({ slice: this.state.slice + 1 })).bind(this),
-              6000
-            );
+          if (start > size) {
+            return false;
           }
+          this.timeout = setTimeout(
+            (() => this.setState({ slice: this.state.slice + 1 })).bind(this),
+            6000
+          );
         }
         return (
           <div className="standings">
