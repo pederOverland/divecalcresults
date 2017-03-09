@@ -3,17 +3,17 @@ import React from "react";
 export default class Scoreboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: startList };
+    this.state = { data: startList, slice: 1 };
     this.socket = io("/divecalc");
     this.socket.on("divecalc", data => {
-      this.setState({ data: data });
+      this.setState({ data: data, slice: 1 });
     });
   }
   componentWillUnmount() {
     this.socket.off("divecalc");
   }
   render() {
-    if(this.timeout){
+    if (this.timeout) {
       clearTimeout(this.timeout);
       delete this.timeout;
     }
@@ -25,9 +25,20 @@ export default class Scoreboard extends React.Component {
       case "startlist":
       case "results":
         const startlist = data.action == "startlist";
-        const results = startlist
+        let results = startlist
           ? event.results.sort((a, b) => a.position - b.position)
           : event.results;
+          const size = results.length;
+        if (size > 10) {
+          const start = (this.state.slice - 1) * 10;
+          results = results.slice(start, start + 10);
+          if (size > start + 10) {
+            this.timeout = setTimeout(
+              (() => this.setState({ slice: this.state.slice + 1 })).bind(this),
+              6000
+            );
+          }
+        }
         return (
           <div className="standings">
             <div className="standingsHeader">
