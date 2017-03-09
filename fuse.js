@@ -12,4 +12,4 @@ const fuse = FuseBox.init({
   ]
 });
 
-fuse.bundle(">index.js")
+fuse.devServer(">index.js")

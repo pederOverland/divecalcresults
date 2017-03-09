@@ -6,8 +6,6 @@ $inner-padding: 10px;
 }
 
 body {
-    //background: url("/img_5269.jpg") no-repeat;
-    //background-size: cover;
     font-size: 18px;
     font-family: roboto;
 }
@@ -30,7 +28,7 @@ body {
     left: 15vw;
     bottom: 5vh;
     .standingsHeader {
-        background: linear-gradient(to right, rgba(80, 153, 178, .8), rgba(80, 153, 178, .4));
+        background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));
         padding: 10px 20px;
         color: white;
         .competition{
@@ -42,13 +40,13 @@ body {
         }
     }
     .standingsFooter{
-        background: linear-gradient(to right, rgba(80, 153, 178, .8), rgba(80, 153, 178, .4));
+        background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));
         padding: 4px 20px;
         color: white;
         margin-top: 4px;
     }
     .resultline {
-        background: linear-gradient(to right, rgba(255, 255, 255, .9), rgba(255, 255, 255, .6));
+        background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
         padding: 0 20px;
         margin-top: 4px;
         display: flex;
@@ -69,7 +67,7 @@ body {
     bottom: 5vh;
     .header {
         font-size: 1.1em;
-        background: linear-gradient(to right, rgba(80, 153, 178, .8), rgba(80, 153, 178, .4));
+        background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
         padding: 0 $outer-padding;
         .position {
             margin-right: $inner-padding;
@@ -79,7 +77,7 @@ body {
         display: flex;
         flex-wrap: wrap;
         .item {
-            background: rgba(255, 255, 255, .8);
+            background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
             margin-top: 4px;
             padding: 4px $outer-padding 4px $inner-padding;
             width: 50%;
@@ -100,7 +98,7 @@ body {
     }
     &.judgeAwards {
         margin-top: 4px;
-        background: rgba(255, 255, 255, .8);
+        background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
         padding: 4px 0;
         justify-content: space-around;
     }

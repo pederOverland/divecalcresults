@@ -3,7 +3,7 @@ import React from "react";
 export default class Scoreboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: {} };
+    this.state = { data: startList };
     this.socket = io("/divecalc");
     this.socket.on("divecalc", data => {
       this.setState({ data: data });
