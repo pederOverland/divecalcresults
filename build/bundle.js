@@ -47,9 +47,14 @@ ___scope___.file("index.js", function(exports, require, module, __filename, __di
 "use strict";var _react = require("react");var _react2 = _interopRequireDefault(_react);
 var _reactDom = require("react-dom");var _reactDom2 = _interopRequireDefault(_reactDom);
 var _scoreboard = require("./scoreboard.js");var _scoreboard2 = _interopRequireDefault(_scoreboard);
+var _bigscreen = require("./bigscreen.js");var _bigscreen2 = _interopRequireDefault(_bigscreen);
 require("./scoreboard.scss");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-_reactDom2.default.render(_react2.default.createElement(_scoreboard2.default, null), document.getElementById("scoreboard"));
+if (document.body.classList.contains("bigscreen")) {
+  _reactDom2.default.render(_react2.default.createElement(_bigscreen2.default, null), document.getElementById("scoreboard"));
+} else {
+  _reactDom2.default.render(_react2.default.createElement(_scoreboard2.default, null), document.getElementById("scoreboard"));
+}
 });
 ___scope___.file("scoreboard.js", function(exports, require, module, __filename, __dirname){
 
@@ -61,6 +66,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
     _this.state = { data: startList, slice: 1 };
     _this.socket = io("/divecalc");
     _this.socket.on("divecalc", function (data) {
+      console.log(data);
       _this.setState({ data: data, slice: 1 });
     });return _this;
   }_createClass(Scoreboard, [{ key: "componentWillUnmount", value: function componentWillUnmount()
@@ -174,6 +180,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
           return _react2.default.createElement("div", null);}
 
     } }]);return Scoreboard;}(_react2.default.Component);exports.default = Scoreboard;
+
 
 
 var startList = {
@@ -414,9 +421,636 @@ var baseDive = {
   startDateFmt: "Jan 15, 2017",
   latestUpdate: 1488873245148 };
 });
+___scope___.file("bigscreen.js", function(exports, require, module, __filename, __dirname){
+
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = require("react");var _react2 = _interopRequireDefault(_react);
+var _dives = require("./dives");var _dives2 = _interopRequireDefault(_dives);
+var _logos = require("./logos");var _logos2 = _interopRequireDefault(_logos);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
+
+Bigscreen = function (_React$Component) {_inherits(Bigscreen, _React$Component);
+  function Bigscreen(props) {_classCallCheck(this, Bigscreen);var _this = _possibleConstructorReturn(this, (Bigscreen.__proto__ || Object.getPrototypeOf(Bigscreen)).call(this,
+    props));
+    _this.socket = io("/divecalc");
+    _this.socket.on("divecalc", function (data) {
+      console.log(data);
+      var key = data.event.name;
+      var c = Object.assign({}, _this.state.competitions);
+      c[key] = data;
+      _this.setState({ competitions: c });
+    });
+    _this.state = { competitions: {} };return _this;
+  }_createClass(Bigscreen, [{ key: "componentWillUnmount", value: function componentWillUnmount()
+    {
+      this.socket.off("divecalc");
+    } }, { key: "render", value: function render()
+    {var _this2 = this;
+      return (
+        _react2.default.createElement("div", { className: "bigscreen" },
+          Object.keys(this.state.competitions).map(function (k) {return (
+              _react2.default.createElement(Scoreboard, _extends({ key: k }, _this2.state.competitions[k])));})));
+
+
+
+    } }]);return Bigscreen;}(_react2.default.Component);exports.default = Bigscreen;var
+
+
+Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Component2);
+  function Scoreboard(props) {_classCallCheck(this, Scoreboard);var _this3 = _possibleConstructorReturn(this, (Scoreboard.__proto__ || Object.getPrototypeOf(Scoreboard)).call(this,
+    props));
+    _this3.state = { data: startList, slice: 1 };return _this3;
+  }_createClass(Scoreboard, [{ key: "render", value: function render()
+    {var _this4 = this;
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+        delete this.timeout;
+      }
+      //this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
+      var data = this.props;
+      var diver = data.diver;
+      var event = data.event;
+      switch (data.action) {
+        case "startlist":
+        case "results":
+          var startlist = data.action == "startlist";
+          var results = startlist ?
+          event.results.sort(function (a, b) {return a.position - b.position;}) :
+          event.results;
+          var size = results.length;
+          if (size > 10) {
+            var start = (this.state.slice - 1) * 10;
+            results = results.slice(start, start + 10);
+            if (start > size) {
+              return false;
+            }
+            this.timeout = setTimeout(
+            function () {return _this4.setState({ slice: _this4.state.slice + 1 });}.bind(this),
+            10000);
+
+          }
+          return (
+            _react2.default.createElement("div", { className: "standings" },
+              _react2.default.createElement("div", { className: "standingsHeader" },
+                _react2.default.createElement("div", { className: "competition" },
+                  event.name),
+
+                _react2.default.createElement("div", { className: "description" },
+                  startlist ? "Startlist" : "Result after round " + event.round)),
+
+
+              results.map(function (r, i) {return (
+                  _react2.default.createElement("div", { className: "resultline", key: i },
+                    _react2.default.createElement("div", { className: "position" },
+                      startlist ? r.position : r.rank),
+
+                    _react2.default.createElement("div", { className: "name" }, r.name),
+                    !startlist && _react2.default.createElement("div", { className: "points" }, r.result)));}),
+
+
+              _react2.default.createElement("div", { className: "standingsFooter" },
+                data.competition)));
+
+
+
+        /*
+                                     case "dive":
+                                       return (
+                                         <div className="dive">
+                                           <div className="header">
+                                             <span className="position">{diver.position}</span>
+                                             <span className="name">{diver.name}</span>
+                                           </div>
+                                           <div className="data">
+                                             <div className="item">
+                                               <div>Runde {diver.dive.position}/{event.rounds}</div>
+                                               <div>Stup {diver.dive.dive}</div>
+                                             </div>
+                                             <div className="item">
+                                               <div>Vanskelighetsgrad</div>
+                                               <div>{diver.dive.dd}</div>
+                                             </div>
+                                           </div>
+                                           <div className="data">
+                                             <div className="item">
+                                               <div>Nåværende plassering</div>
+                                               <div>{diver.rank}</div>
+                                             </div>
+                                             <div className="item" />
+                                           </div>
+                                         </div>
+                                       );
+                                     case "awards":
+                                       return (
+                                         <div className="awards">
+                                           <div className="header">
+                                             <span className="position">{diver.position}</span>
+                                             <span className="name">{diver.name}</span>
+                                           </div>
+                                           <div className="data">
+                                             <div className="item">
+                                               <div>Runde {event.round}/{event.rounds}</div>
+                                             </div>
+                                             <div className="item">
+                                               <div>Stup <strong>{diver.dive.result}</strong></div>
+                                               <div>Total <strong>{diver.dive.total}</strong></div>
+                                             </div>
+                                           </div>
+                                           <div className="data judgeAwards">
+                                             {diver.dive.actualAwards.map((a, i) => (
+                                               <div className="judgeAward" key={i}>{a}</div>
+                                             ))}
+                                           </div>
+                                         </div>
+                                       );
+                                       */
+        default:
+          var match = /(\d+)(\w)/.exec(diver.dive.dive);
+          var diveName = _dives2.default[match[1]];
+          var divePos = match[2];
+          var logo = _logos2.default[diver.team];
+          return (
+            _react2.default.createElement("div", { className: "standings" },
+              _react2.default.createElement("div", { className: "standingsHeader" },
+                _react2.default.createElement("div", { className: "competition" },
+                  event.name),
+
+                _react2.default.createElement("div", { className: "description" },
+                  "Top " +
+                  event.results.slice(0, 5).length +
+                  " after round " +
+                  event.round)),
+
+
+              event.results.slice(0, 5).map(function (r, i) {return (
+                  _react2.default.createElement("div", { className: "resultline", key: i },
+                    _react2.default.createElement("div", { className: "position" },
+                      r.rank),
+
+                    _react2.default.createElement("div", { className: "name" }, r.name),
+                    _react2.default.createElement("div", { className: "points" }, r.result)));}),
+
+
+              _react2.default.createElement("div", { className: "spacer" }),
+              _react2.default.createElement("div", { className: "diver" },
+                _react2.default.createElement("div", {
+                  className: "position",
+                  style: { backgroundImage: "url(" + logo + ")" } }),
+
+                _react2.default.createElement("div", { className: "name" }, diver.position + ". " + diver.name),
+                _react2.default.createElement("div", { className: "round" }, event.round + "/" + event.rounds),
+                _react2.default.createElement("div", { className: "bsdive" },
+                  _react2.default.createElement("div", { className: "code" }, diver.dive.dive),
+                  _react2.default.createElement("div", { className: "dd" }, diver.dive.dd))),
+
+
+              data.action == "dive" ?
+              _react2.default.createElement("div", { className: "whiteline awardline" },
+                _react2.default.createElement("div", null, "Position: ", diver.rank),
+                _react2.default.createElement("div", null, "Total: ", diver.result),
+                _react2.default.createElement("div", null, diveName)) :
+
+              false,
+              data.action == "awards" ?
+              _react2.default.createElement("div", { className: "whiteline awardline" },
+                diver.dive.actualAwards.map(function (a, i) {return (
+                    _react2.default.createElement("div", { className: "result", key: i }, a));})) :
+
+
+              false,
+              data.action == "awards" ?
+              _react2.default.createElement("div", { className: "whiteline awardline" },
+                _react2.default.createElement("div", null, "Dive: ", diver.dive.result),
+                _react2.default.createElement("div", null, "Total: ", diver.result),
+                _react2.default.createElement("div", null, "Position: ", diver.rank)) :
+
+              false,
+              diver.needAwards ?
+              _react2.default.createElement("div", { className: "whiteline" }, "Score needed to reach position " +
+
+                diver.needAwards[0].toRank + ": " + diver.needAwards[0].award) :
+
+
+              false));}
+
+
+
+    } }]);return Scoreboard;}(_react2.default.Component);
+
+
+var startList = {
+  endDateFmt: "Jan 15, 2017",
+  endDate: 1484470986000,
+  action: "startlist",
+  dateFmt: "Mar 7, 2017",
+  competition: "Landslagstest",
+  place: "AdO arena, Bergen",
+  dateTimeFmt: "3/7/17 1:29 PM",
+  event: {
+    divesPerRound: 1,
+    round: 8,
+    startTimeFmt: "1/15/17 2:00 PM",
+    name: "Teskonkurranse 3m, Forsøk",
+    startTime: 1484485200000,
+    finished: true,
+    pk: 2,
+    endTime: 1484488800000,
+    endTimeFmt: "1/15/17 3:00 PM",
+    type: "TEAM",
+    results: [
+    {
+      result: "220.35",
+      name: "Anne Sofie Moe Holm / Julie Synnøve Thorsen",
+      rank: 1,
+      pk: 4,
+      position: 2,
+      team: "BS.",
+      shortName: "A. Holm / J. Thorsen" },
+
+    {
+      result: "219.90",
+      diffToFirst: "-0.45",
+      name: "Amalie Marie Kupka / Serina Haldorsen",
+      rank: 2,
+      pk: 3,
+      position: 4,
+      team: "BS.",
+      shortName: "A. Kupka / S. Haldorsen" },
+
+    {
+      result: "197.00",
+      diffToFirst: "-23.35",
+      name: "Jonas Erik Thorsen / Martin Nåden Dyrstad",
+      rank: 3,
+      pk: 8,
+      position: 6,
+      team: "B/S",
+      shortName: "J. Thorsen / M. Nåden Dyrstad" },
+
+    {
+      result: "191.35",
+      diffToFirst: "-29.00",
+      name: "Caroline Sofie Kupka / Safyia Elmrani",
+      rank: 4,
+      pk: 5,
+      position: 3,
+      team: "B/S",
+      shortName: "C. Kupka / S. Elmrani" },
+
+    {
+      result: "187.75",
+      diffToFirst: "-32.60",
+      name: "Emil Ruenes Jacobsen / Philip Sandve",
+      rank: 5,
+      pk: 6,
+      position: 1,
+      team: "KS.",
+      shortName: "E. Jacobsen / P. Sandve" },
+
+    {
+      result: "180.80",
+      diffToFirst: "-39.55",
+      name: "Henry Kristiansen / Ulrik Hvarnes Evensen",
+      rank: 6,
+      pk: 7,
+      position: 5,
+      team: "SP.",
+      shortName: "Kristiansen / Hvarnes Evensen" }],
+
+
+    rounds: 8 },
+
+  diver: {
+    result: "187.75",
+    name: "Emil Ruenes Jacobsen / Philip Sandve",
+    rank: 5,
+    pk: 6,
+    position: 1,
+    team: "KS.",
+    dive: {
+      dd: "1.7",
+      actualAwards: ["3.0", "3.5", "3.0"],
+      penalty: "0.0",
+      sum: "9.50",
+      result: "16.15",
+      total: "58.55",
+      effectiveAwards: ["3.0", "3.5", "3.0"],
+      maxAward: "10",
+      position: 3,
+      dive: "401A",
+      height: "3" },
+
+    shortName: "E. Jacobsen / P. Sandve" },
+
+  startDate: 1484470986000,
+  startDateFmt: "Jan 15, 2017",
+  latestUpdate: 1488889771221 };
+
+
+var baseAward = {
+  endDateFmt: "Jan 15, 2017",
+  endDate: 1484470986000,
+  action: "awards",
+  dateFmt: "Mar 7, 2017",
+  competition: "Landslagstest",
+  place: "AdO arena, Bergen",
+  dateTimeFmt: "3/7/17 10:02 AM",
+  event: {
+    divesPerRound: 1,
+    round: 1,
+    startTimeFmt: "1/15/17 10:03 AM",
+    name: "Testkonkurranse 3m x, Forsøk",
+    startTime: 1484470986000,
+    finished: true,
+    pk: 13,
+    endTime: 1484470986000,
+    endTimeFmt: "1/15/17 10:03 AM",
+    type: "NORMAL",
+    results: [
+    {
+      result: "19.20",
+      name: "Caroline Sofie Kupka",
+      rank: 1,
+      pk: 54,
+      position: 2,
+      team: "BS.",
+      shortName: "Caroline Sofie Kupka" },
+
+    {
+      result: "3.60",
+      diffToFirst: "-15.60",
+      name: "Anne Sofie Moe Holm",
+      rank: 2,
+      pk: 53,
+      position: 1,
+      team: "BS.",
+      shortName: "Anne Sofie Moe Holm" }],
+
+
+    rounds: 1 },
+
+  diver: {
+    result: "19.20",
+    name: "Caroline Sofie Kupka",
+    rank: 1,
+    pk: 54,
+    position: 2,
+    team: "BS.",
+    dive: {
+      dd: "1.2",
+      actualAwards: ["5.0", "6.0", "5.0"],
+      penalty: "0.0",
+      sum: "16.00",
+      result: "19.20",
+      total: "19.20",
+      effectiveAwards: ["5.0", "6.0", "5.0"],
+      maxAward: "10",
+      position: 1,
+      dive: "101C",
+      height: "1" },
+
+    shortName: "Caroline Sofie Kupka" },
+
+  startDate: 1484470986000,
+  startDateFmt: "Jan 15, 2017",
+  latestUpdate: 1488877365912 };
+
+
+var baseDive = {
+  endDateFmt: "Jan 15, 2017",
+  endDate: 1484470986000,
+  action: "dive",
+  dateFmt: "Mar 7, 2017",
+  competition: "Landslagstest",
+  place: "AdO arena, Bergen",
+  dateTimeFmt: "3/7/17 8:54 AM",
+  event: {
+    divesPerRound: 1,
+    round: 1,
+    startTimeFmt: "1/15/17 10:03 AM",
+    name: "Testkonkurranse 3m x, Forsøk",
+    startTime: 1484470986000,
+    finished: false,
+    pk: 13,
+    endTime: 1484470986000,
+    endTimeFmt: "1/15/17 10:03 AM",
+    type: "NORMAL",
+    results: [
+    {
+      result: "3.60",
+      pending: false,
+      name: "Anne Sofie Moe Holm",
+      rank: 1,
+      pk: 53,
+      position: 1,
+      team: "BS.",
+      shortName: "Anne Sofie Moe Holm" },
+
+    {
+      result: "0.00",
+      diffToFirst: "-3.60",
+      needAwards: [{ toRank: 1, award: "1" }],
+      pending: true,
+      name: "Caroline Sofie Kupka",
+      rank: 2,
+      pk: 54,
+      position: 2,
+      team: "BS.",
+      shortName: "Caroline Sofie Kupka" }],
+
+
+    rounds: 1 },
+
+  diver: {
+    result: "0.00",
+    needAwards: [{ toRank: 1, award: "1" }],
+    name: "Caroline Sofie Kupka",
+    rank: 2,
+    pk: 54,
+    position: 2,
+    team: "BS.",
+    dive: { dd: "1.2", position: 1, dive: "101C", height: "1" },
+    shortName: "Caroline Sofie Kupka" },
+
+  startDate: 1484470986000,
+  startDateFmt: "Jan 15, 2017",
+  latestUpdate: 1488873245148 };
+});
+___scope___.file("dives.js", function(exports, require, module, __filename, __dirname){
+
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = {
+  101: "Forward Dive",
+  102: "Forward 1 Somersault",
+  103: "Forward 1 ½ Somersaults",
+  104: "Forward 2 Somersaults",
+  105: "Forward 2½ Somersaults",
+  106: "Forward 3 Somersaults",
+  107: "Forward 3½ Somersaults",
+  108: "Forward 4 Somersaults",
+  109: "Forward 4½ Somersaults",
+  1011: "Forward 5½ Somersaults",
+  112: "Forward Flying Somersaults",
+  113: "Forward Flying 1½ Somersaults",
+  114: "Forward Flying 2 Somersaults",
+  115: "Forward Flying 2½ Somersaults",
+  201: "Back Dive",
+  202: "Back 1 Somersault",
+  203: "Back 1½ Somersaults",
+  204: "Back 2 Soms Somersaults",
+  205: "Back 2½ Somersaults",
+  206: "Back 3 Somersaults",
+  207: "Back 3½ Somersaults",
+  208: "Back 4 Somersaults",
+  209: "Back 4½ Somersaults",
+  212: "Back Flying Somersaults",
+  213: "Back Flying 1½ Somersaults",
+  215: "Back Flying 2 ½ Somersaults",
+  301: "Reverse Dive",
+  302: "Reverse 1 Somersault",
+  303: "Reverse 1½ Somersaults",
+  304: "Reverse 2 Somersaults",
+  305: "Reverse 2½ Somersaults",
+  306: "Reverse 3 Somersaults",
+  307: "Reverse 3½ Somersaults",
+  308: "Reverse 4 Somersaults",
+  309: "Reverse 4½ Somersaults",
+  312: "Reverse Flying Somersaults",
+  313: "Reverse Flying 1½ Somersaults",
+  401: "Inward Dive",
+  402: "Inward 1 Somersault",
+  403: "Inward 1½ Somersault",
+  404: "Inward 2 Somersaults",
+  405: "Inward 2½ Somersaults",
+  406: "Inward 3 Somersaults",
+  407: "Inward 3½ Somersaults",
+  408: "Inward 4 Somersaults",
+  409: "Inward 4½ Somersaults",
+  412: "Inward Flying Somersaults",
+  413: "Inward Flying 1½ Somersaults",
+  5111: "Fwd Dive ½ Twist",
+  5112: "Fwd Dive 1 Twist",
+  5121: "Fwd Somersault ½ Twist",
+  5122: "Fwd Somersault 1 Twist",
+  5124: "Fwd Somersault 2 Twists",
+  5131: "Fwd 1½ Somersaults ½ Twist",
+  5132: "Fwd 1½ Somersaults 1 Twist",
+  5134: "Fwd 1½ Somersaults 2 Twists",
+  5136: "Fwd 1½ Somersaults 3 Twists",
+  5138: "Fwd 1½ Somersaults 4 Twists",
+  5152: "Fwd 2½ Somersaults 1 Twist",
+  5154: "Fwd 2½ Somersaults 2 Twists",
+  5156: "Fwd 2½ Somersaults 3 Twists",
+  5172: "Fwd 3½ Somersaults 1 Twist",
+  5211: "Back Dive ½ Twist",
+  5212: "Back Dive 1 Twist",
+  5221: "Back Somersault ½ Twist",
+  5222: "Back Somersault 1 Twist",
+  5223: "Back Somersault 1½ Twists",
+  5225: "Back Somersault 2½ Twists",
+  5231: "Back 1½ Somersaults ½ Twist",
+  5233: "Back 1½ Somersaults 1½ Twists",
+  5235: "Back 1½ Somersaults 2½ Twists",
+  5237: "Back 1½ Somersaults 3½ Twists",
+  5239: "Back 1½ Somersaults 4½ Twists",
+  5251: "Back 2½ Somersaults ½ Twist",
+  5253: "Back 2½ Somersaults 1½ Twists",
+  5255: "Back 2½ Somersaults 2½ Twists",
+  5257: "Back 2½ Somersaults 3½ Twists",
+  5271: "Back 3½ Somersaults ½ Twist",
+  5273: "Back 3½ Somersaults 1½ Twist",
+  5275: "Back 3½ Somersaults 2½ Twist",
+  5311: "Reverse Dive ½ Twist",
+  5312: "Reverse Dive 1 Twist",
+  5321: "Reverse Somersault ½ Twist",
+  5322: "Reverse Somersault 1 Twist",
+  5323: "Reverse Somersault 1½ Twists",
+  5325: "Reverse Somersault 2½ Twists",
+  5331: "Reverse 1½ Soms. ½ Twists",
+  5333: "Reverse 1½ Soms. 1½ Twists",
+  5335: "Reverse 1½ Soms. 2½ Twists",
+  5337: "Reverse 1½ Soms. 3½ Twists",
+  5339: "Reverse 1½ Soms. 4½ Twists",
+  5351: "Reverse 2½ Soms. ½ Twists",
+  5353: "Reverse 2½ Soms. 1½ Twists",
+  5355: "Reverse 2½ Soms. 2½ Twists",
+  5371: "Reverse 3½ Soms. ½ Twists",
+  5373: "Reverse 3½ Soms. 1½ Twist",
+  5375: "Reverse 3½ Soms. 2½ Twist",
+  5411: "Inward Dive ½ Twist",
+  5412: "Inward Dive 1 Twist",
+  5421: "Inward Somersault ½ Twist",
+  5422: "Inward Somersault 1 Twist",
+  5432: "Inward 1½ Somersaults 1 Twist",
+  5434: "Inward 1½ Somersaults 2 Twists",
+  5436: "Inward 1½ Somersaults 3 Twists",
+  600: "Armstand Dive",
+  611: "Armstand Forward ½ Somersault",
+  612: "Armstand Forward 1 Somersault",
+  614: "Armstand Forward 2 Somersaults",
+  616: "Armstand Forward 3 Somersaults",
+  621: "Armstand Back ½ Somersault",
+  622: "Armstand Back Somersault",
+  623: "Armstand Back 1½ Somersaults",
+  624: "Armstand Back 2 Somersaults",
+  626: "Armstand Back 3 Somersaults",
+  628: "Armstand Back 4 Somersaults",
+  631: "Armstand Reverse ½ Somersault",
+  632: "Armstand Reverse 1 Somersault",
+  633: "Armstand Reverse 1½ Soms.",
+  634: "Armstand Reverse 2 Soms.",
+  636: "Armstand Reverse 3 Soms.",
+  638: "Armstand Reverse 4 Soms.",
+  6122: "Armstand Fwd Som. 1 Twist",
+  6124: "Armstand Fwd Som. 2 Twists",
+  6142: "Armstand Fwd 2 Soms. 1 Twist",
+  6144: "Armstand Fwd 2 Soms. 2 Twists",
+  6162: "Armstand Fwd 3 Soms. 1 Twist",
+  6221: "Armstand Back Som. ½ Twist",
+  6241: "Armstand Back 2 Soms. ½ Twist",
+  6243: "Armstand Back 2 Soms 1½ Twists",
+  6245: "Armstand Back 2 Soms 2½ Twists",
+  6247: "Armstand Back 2 Soms 3½ Twists",
+  6261: "Armstand Back 3 Soms. ½ Twist",
+  6263: "Armstand Back 3 Soms 1½ Twists",
+  6265: "Armstand Back 3 Soms 2½ Twists" };
+});
+___scope___.file("logos.js", function(exports, require, module, __filename, __dirname){
+
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = {
+    "BS.": '/img/flags/norway.svg',
+    "B/S": '/img/flags/norway.svg',
+    "SP.": '/img/flags/norway.svg',
+    "BSHK": '/img/flags/sweden.svg',
+    "AUT": '/img/flags/austria.svg',
+    "Czech": '/img/flags/czech-republic.svg',
+    "FRA": '/img/flags/france.svg',
+    "GAK": '/img/flags/austria.svg',
+    "Greece": '/img/flags/greece.svg',
+    "IT": '/img/flags/italy.svg',
+    "JSS": '/img/flags/sweden.svg',
+    "KSTK": '/img/flags/norway.svg',
+    "LUK": '/img/flags/denmark.svg',
+    "MKK": '/img/flags/sweden.svg',
+    "Monaco": '/img/flags/monaco.svg',
+    "CAN": '/img/flags/canada.svg',
+    "PL": '/img/flags/poland.svg',
+    "ES": '/img/flags/spain.svg',
+    "ROU": '/img/flags/romania.svg',
+    "SSC": '/img/flags/norway.svg',
+    "SPIF": '/img/flags/sweden.svg',
+    "Spinn": '/img/flags/norway.svg',
+    "Swiss": '/img/flags/switzerland.svg',
+    "Fribourg": '/img/flags/switzerland.svg',
+    "SDG": '/img/flags/switzerland.svg',
+    "SDRD": '/img/flags/switzerland.svg',
+    "FIN": '/img/flags/finland.svg',
+    "Netherland": '/img/flags/netherlands.svg',
+    "Ne.": '/img/flags/netherlands.svg',
+    "Tiirat": '/img/flags/finland.svg',
+    "VanDi": '/img/flags/finland.svg',
+    "VSS": '/img/flags/sweden.svg' };
+});
 ___scope___.file("scoreboard.scss", function(exports, require, module, __filename, __dirname){
 
-__fsbx_css("scoreboard.scss", "@import url(\"https://fonts.googleapis.com/css?family=Roboto\");\n* {\n  box-sizing: border-box; }\n\nbody {\n  font-size: 28px;\n  font-family: roboto; }\n\n.position {\n  display: inline-block;\n  background: #fbc525;\n  height: 36px;\n  width: 36px;\n  text-align: center;\n  line-height: 36px;\n  font-size: 20px;\n  margin-right: 10px; }\n\n.standings {\n  -webkit-app-region: drag;\n  width: 70vw;\n  position: absolute;\n  left: 15vw;\n  bottom: 5vh; }\n  .standings .standingsHeader {\n    background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    padding: 10px 20px;\n    color: white; }\n    .standings .standingsHeader .competition {\n      font-size: 1.4em;\n      margin-bottom: 10px; }\n    .standings .standingsHeader .description {\n      font-size: 1.1em; }\n  .standings .standingsFooter {\n    background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    padding: 4px 20px;\n    color: white;\n    margin-top: 4px; }\n  .standings .resultline {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    padding: 0 20px;\n    margin-top: 4px;\n    display: flex;\n    height: 36px;\n    align-items: center; }\n    .standings .resultline .name {\n      flex: 1; }\n\n.dive,\n.awards {\n  -webkit-app-region: drag;\n  width: 80vw;\n  margin: 0 10vw;\n  position: absolute;\n  bottom: 5vh; }\n  .dive .header,\n  .awards .header {\n    font-size: 1em;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    padding: 0 20px; }\n    .dive .header .position,\n    .awards .header .position {\n      margin-right: 10px;\n      font-size: 1em; }\n  .dive .data,\n  .awards .data {\n    display: flex;\n    flex-wrap: wrap; }\n    .dive .data .item,\n    .awards .data .item {\n      background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n      margin-top: 4px;\n      padding: 4px 20px 4px 10px;\n      width: 50%;\n      display: flex;\n      justify-content: space-between; }\n      .dive .data .item:nth-child(odd),\n      .awards .data .item:nth-child(odd) {\n        padding: 4px 10px 4px 20px;\n        width: calc(50% - 4px);\n        margin-right: 4px; }\n\n.awards .data .item {\n  justify-content: space-around; }\n\n.awards .data.judgeAwards {\n  margin-top: 4px;\n  background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n  padding: 4px 0;\n  justify-content: space-around; }\n\n/*# sourceMappingURL=scoreboard.scss.map */");
+__fsbx_css("scoreboard.scss", "@import url(\"https://fonts.googleapis.com/css?family=Roboto\");\n* {\n  box-sizing: border-box; }\n\nbody {\n  font-size: 28px;\n  font-family: roboto; }\n  body.bigscreen {\n    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(\"/img/ado.jpg\") no-repeat;\n    background-size: auto, cover; }\n\ndiv.bigscreen .standings {\n  width: 94vw;\n  height: 90vh;\n  position: absolute;\n  left: 3vw;\n  top: 3vh;\n  display: flex;\n  flex-direction: column; }\n  div.bigscreen .standings:first-child:not(:last-child),\n  div.bigscreen .standings + .standings {\n    left: 1vw;\n    width: 47vw;\n    font-size: 0.8em; }\n  div.bigscreen .standings + .standings {\n    left: 51vw; }\n  div.bigscreen .standings .spacer {\n    flex: 1; }\n  div.bigscreen .standings .standingsHeader {\n    position: relative;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    margin-left: 100px;\n    min-height: 100px;\n    padding: 0;\n    padding-left: 20px;\n    color: inherit;\n    border-radius: 0 50px 50px 0;\n    display: flex;\n    flex-direction: column;\n    justify-content: center; }\n    div.bigscreen .standings .standingsHeader:before {\n      content: \"\";\n      position: absolute;\n      width: 100px;\n      height: 100px;\n      background: url(/img/diver.svg);\n      background-size: cover;\n      left: -100px; }\n  div.bigscreen .standings .standingsFooter {\n    background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    padding: 0 20px;\n    color: white;\n    margin-top: 4px;\n    width: 100%;\n    height: 80px;\n    border-radius: 40px;\n    line-height: 80px;\n    position: absolute;\n    bottom: 0; }\n  div.bigscreen .standings .whiteline {\n    margin: 6px 30px 0;\n    height: 44px;\n    border-radius: 22px;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    align-items: center;\n    display: flex;\n    padding-left: 20px; }\n    div.bigscreen .standings .whiteline.awardline {\n      padding-left: 0;\n      justify-content: space-around; }\n  div.bigscreen .standings .resultline {\n    margin: 6px 30px 0;\n    padding-left: 0;\n    border-radius: 22px;\n    height: 44px; }\n    div.bigscreen .standings .resultline .position {\n      border-radius: 22px;\n      width: 44px;\n      height: 44px;\n      line-height: 44px; }\n  div.bigscreen .standings .diver {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    display: flex;\n    border-radius: 50px;\n    justify-content: space-between;\n    overflow: hidden; }\n    div.bigscreen .standings .diver .name {\n      flex: 1;\n      font-size: 1.3em;\n      align-self: center; }\n    div.bigscreen .standings .diver .round {\n      align-self: center;\n      padding: 0px 20px; }\n    div.bigscreen .standings .diver .position {\n      height: 100px;\n      width: 100px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.5em;\n      background-size: cover; }\n    div.bigscreen .standings .diver .bsdive {\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      padding-right: 30px;\n      text-align: center; }\n\n.position {\n  display: inline-block;\n  background: #fbc525;\n  height: 36px;\n  width: 36px;\n  text-align: center;\n  line-height: 36px;\n  font-size: 20px;\n  margin-right: 10px; }\n\n.standings {\n  -webkit-app-region: drag;\n  width: 70vw;\n  height: 80vh;\n  position: absolute;\n  left: 15vw;\n  bottom: 5vh; }\n  .standings .standingsHeader {\n    background-image: url(\"img/logo.svg\"), linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    background-repeat: no-repeat;\n    background-position: right;\n    background-size: auto 100%;\n    padding: 10px 20px;\n    color: white; }\n    .standings .standingsHeader .competition {\n      font-size: 1.4em;\n      margin-bottom: 10px; }\n    .standings .standingsHeader .description {\n      font-size: 1.1em; }\n  .standings .standingsFooter {\n    background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    padding: 4px 20px;\n    color: white;\n    margin-top: 4px; }\n  .standings .resultline {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    padding: 0 20px;\n    margin-top: 4px;\n    display: flex;\n    height: 36px;\n    align-items: center; }\n    .standings .resultline .name {\n      flex: 1; }\n\n.dive,\n.awards {\n  -webkit-app-region: drag;\n  width: 80vw;\n  margin: 0 10vw;\n  position: absolute;\n  bottom: 5vh; }\n  .dive .header,\n  .awards .header {\n    font-size: 1em;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    padding: 0 20px; }\n    .dive .header .position,\n    .awards .header .position {\n      margin-right: 10px;\n      font-size: 1em; }\n  .dive .data,\n  .awards .data {\n    display: flex;\n    flex-wrap: wrap; }\n    .dive .data .item,\n    .awards .data .item {\n      background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n      margin-top: 4px;\n      padding: 4px 20px 4px 10px;\n      width: 50%;\n      display: flex;\n      justify-content: space-between; }\n      .dive .data .item:nth-child(odd),\n      .awards .data .item:nth-child(odd) {\n        padding: 4px 10px 4px 20px;\n        width: calc(50% - 4px);\n        margin-right: 4px; }\n\n.awards .data .item {\n  justify-content: space-around; }\n\n.awards .data.judgeAwards {\n  margin-top: 4px;\n  background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n  padding: 4px 0;\n  justify-content: space-around; }\n\n/*# sourceMappingURL=scoreboard.scss.map */");
 });
 });
 FuseBox.pkg("fusebox-hot-reload", {}, function(___scope___){

@@ -21,6 +21,7 @@
     "koa": "^2.0.1",
     "koa-socket": "^4.4.0",
     "koa-static": "^3.0.0",
+    "node-notifier": "^5.0.2",
     "node-sass": "^4.5.0",
     "nodemon": "^1.11.0",
     "react": "^15.4.2",

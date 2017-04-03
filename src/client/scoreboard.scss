@@ -8,51 +8,175 @@ $inner-padding: 10px;
 body {
     font-size: 28px;
     font-family: roboto;
+    &.bigscreen {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/img/ado.jpg") no-repeat;
+        background-size: auto, cover;
+    }
 }
 
-        .position {
-            display: inline-block;
-            background: rgb(251, 197, 037);
-            height: 36px;
-            width: 36px;
-            text-align: center;
-            line-height: 36px;
-            font-size: 20px;
-            margin-right: 10px;
+div.bigscreen {
+    .standings {
+        width: 94vw;
+        height: 90vh;
+        position: absolute;
+        left: 3vw;
+        top: 3vh;
+        display: flex;
+        flex-direction: column;
+        &:first-child:not(:last-child),
+        &+.standings {
+            left: 1vw;
+            width: 47vw;
+            font-size: 0.8em;
         }
+        &+.standings {
+            left: 51vw;
+        }
+        .spacer {
+            flex: 1;
+        }
+        .standingsHeader {
+            position: relative;
+            background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.6));
+            margin-left: 100px;
+            min-height: 100px;
+            padding: 0;
+            padding-left: 20px;
+            color: inherit;
+            border-radius: 0 50px 50px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            &:before {
+                content: "";
+                position: absolute;
+                width: 100px;
+                height: 100px;
+                background: url(/img/diver.svg);
+                background-size: cover;
+                left: -100px;
+            }
+        }
+        .standingsFooter {
+            background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));
+            padding: 0 20px;
+            color: white;
+            margin-top: 4px;
+            width: 100%;
+            height: 80px;
+            border-radius: 40px;
+            line-height: 80px;
+            position: absolute;
+            bottom: 0;
+        }
+        .whiteline {
+            margin: 6px 30px 0;
+            height: 44px;
+            border-radius: 22px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.6));
+            align-items: center;
+            display: flex;
+            padding-left: 20px;
+            &.awardline {
+                padding-left: 0;
+                justify-content: space-around;
+            }
+        }
+        .resultline {
+            margin: 6px 30px 0;
+            padding-left: 0;
+            border-radius: 22px;
+            height: 44px;
+            .position {
+                border-radius: 22px;
+                width: 44px;
+                height: 44px;
+                line-height: 44px;
+            }
+        }
+        .diver {
+            background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.6));
+            display: flex;
+            border-radius: 50px;
+            justify-content: space-between;
+            overflow: hidden;
+            .name {
+                flex: 1;
+                font-size: 1.3em;
+                align-self: center;
+            }
+            .round{
+                align-self: center;
+                padding: 0px 20px;
+            }
+            .position {
+                height: 100px;
+                width: 100px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5em;
+                background-size: cover;
+            }
+            .bsdive {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding-right: 30px;
+                text-align: center;
+            }
+        }
+    }
+}
+
+.position {
+    display: inline-block;
+    background: rgb(251, 197, 037);
+    height: 36px;
+    width: 36px;
+    text-align: center;
+    line-height: 36px;
+    font-size: 20px;
+    margin-right: 10px;
+}
 
 .standings {
     -webkit-app-region: drag;
     width: 70vw;
+    height: 80vh;
     position: absolute;
     left: 15vw;
     bottom: 5vh;
     .standingsHeader {
-        background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));
+        background-image: url("img/logo.svg"), linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));
+        background-repeat: no-repeat;
+        background-position: right;
+        background-size: auto 100%;
         padding: 10px 20px;
         color: white;
-        .competition{
+        .competition {
             font-size: 1.4em;
             margin-bottom: 10px;
         }
-        .description{
+        .description {
             font-size: 1.1em;
         }
     }
-    .standingsFooter{
+    .standingsFooter {
         background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));
         padding: 4px 20px;
         color: white;
         margin-top: 4px;
     }
     .resultline {
-        background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
+        background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.6));
         padding: 0 20px;
         margin-top: 4px;
         display: flex;
         height: 36px;
         align-items: center;
-        .name{
+        .name {
             flex: 1;
         }
     }
@@ -67,18 +191,18 @@ body {
     bottom: 5vh;
     .header {
         font-size: 1em;
-        background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
+        background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.6));
         padding: 0 $outer-padding;
         .position {
             margin-right: $inner-padding;
-	    font-size: 1em;
+            font-size: 1em;
         }
     }
     .data {
         display: flex;
         flex-wrap: wrap;
         .item {
-            background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
+            background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.6));
             margin-top: 4px;
             padding: 4px $outer-padding 4px $inner-padding;
             width: 50%;
@@ -99,7 +223,7 @@ body {
     }
     &.judgeAwards {
         margin-top: 4px;
-        background: linear-gradient(to right, rgba(255,255,255,1), rgba(255, 255, 255, 0.6));
+        background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.6));
         padding: 4px 0;
         justify-content: space-around;
     }

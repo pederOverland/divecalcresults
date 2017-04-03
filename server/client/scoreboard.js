@@ -3,16 +3,16 @@
 Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component);
   function Scoreboard(props) {_classCallCheck(this, Scoreboard);var _this = _possibleConstructorReturn(this, (Scoreboard.__proto__ || Object.getPrototypeOf(Scoreboard)).call(this,
     props));
-    _this.state = { data: startList };
+    _this.state = { data: startList, slice: 1 };
     _this.socket = io("/divecalc");
     _this.socket.on("divecalc", function (data) {
-      _this.setState({ data: data });
+      _this.setState({ data: data, slice: 1 });
     });return _this;
   }_createClass(Scoreboard, [{ key: "componentWillUnmount", value: function componentWillUnmount()
     {
       this.socket.off("divecalc");
     } }, { key: "render", value: function render()
-    {
+    {var _this2 = this;
       if (this.timeout) {
         clearTimeout(this.timeout);
         delete this.timeout;
@@ -28,6 +28,18 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
           var results = startlist ?
           event.results.sort(function (a, b) {return a.position - b.position;}) :
           event.results;
+          var size = results.length;
+          if (size > 10) {
+            var start = (this.state.slice - 1) * 10;
+            results = results.slice(start, start + 10);
+            if (start > size) {
+              return false;
+            }
+            this.timeout = setTimeout(
+            function () {return _this2.setState({ slice: _this2.state.slice + 1 });}.bind(this),
+            6000);
+
+          }
           return (
             _react2.default.createElement("div", { className: "standings" },
               _react2.default.createElement("div", { className: "standingsHeader" },

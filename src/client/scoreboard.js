@@ -6,6 +6,7 @@ export default class Scoreboard extends React.Component {
     this.state = { data: startList, slice: 1 };
     this.socket = io("/divecalc");
     this.socket.on("divecalc", data => {
+      console.log(data);
       this.setState({ data: data, slice: 1 });
     });
   }
@@ -120,6 +121,7 @@ export default class Scoreboard extends React.Component {
     }
   }
 }
+
 
 const startList = {
   endDateFmt: "Jan 15, 2017",
