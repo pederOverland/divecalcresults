@@ -1038,7 +1038,7 @@ ___scope___.file("logos.js", function(exports, require, module, __filename, __di
     "MKK": '/img/flags/sweden.svg',
     "Monaco": '/img/flags/monaco.svg',
     "CAN": '/img/flags/canada.svg',
-    "PL": '/img/flags/poland.svg',
+    "PL": '/img/flags/republic-of-poland.svg',
     "ES": '/img/flags/spain.svg',
     "ROU": '/img/flags/romania.svg',
     "SSC": '/img/flags/norway.svg',
