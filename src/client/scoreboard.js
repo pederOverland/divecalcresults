@@ -38,7 +38,7 @@ export default class Scoreboard extends React.Component {
           }
           this.timeout = setTimeout(
             (() => this.setState({ slice: this.state.slice + 1 })).bind(this),
-            6000
+            10000
           );
         }
         return (
@@ -49,8 +49,8 @@ export default class Scoreboard extends React.Component {
               </div>
               <div className="description">
                 {startlist
-                  ? "Startliste"
-                  : "Resultat etter runde " + event.round}
+                  ? "Start list"
+                  : "Results round " + event.round}
               </div>
             </div>
             {results.map((r, i) => (
@@ -76,17 +76,17 @@ export default class Scoreboard extends React.Component {
             </div>
             <div className="data">
               <div className="item">
-                <div>Runde {diver.dive.position}/{event.rounds}</div>
-                <div>Stup {diver.dive.dive}</div>
+                <div>Round {event.round}/{event.rounds}</div>
+                <div>Dive {diver.dive.dive}</div>
               </div>
               <div className="item">
-                <div>Vanskelighetsgrad</div>
+                <div>DD</div>
                 <div>{diver.dive.dd}</div>
               </div>
             </div>
             <div className="data">
               <div className="item">
-                <div>Nåværende plassering</div>
+                <div>Current rank</div>
                 <div>{diver.rank}</div>
               </div>
               <div className="item" />
@@ -102,11 +102,11 @@ export default class Scoreboard extends React.Component {
             </div>
             <div className="data">
               <div className="item">
-                <div>Runde {event.round}/{event.rounds}</div>
+                <div>Round {event.round}/{event.rounds}</div>
               </div>
               <div className="item">
-                <div>Stup <strong>{diver.dive.result}</strong></div>
-                <div>Total <strong>{diver.dive.total}</strong></div>
+                <div>Dive <strong>{diver.dive.result}</strong></div>
+                <div>Total <strong>{diver.result}</strong></div>
               </div>
             </div>
             <div className="data judgeAwards">

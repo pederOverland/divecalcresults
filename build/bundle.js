@@ -98,7 +98,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
             }
             this.timeout = setTimeout(
             function () {return _this2.setState({ slice: _this2.state.slice + 1 });}.bind(this),
-            6000);
+            10000);
 
           }
           return (
@@ -109,8 +109,8 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
                 _react2.default.createElement("div", { className: "description" },
                   startlist ?
-                  "Startliste" :
-                  "Resultat etter runde " + event.round)),
+                  "Start list" :
+                  "Results round " + event.round)),
 
 
               results.map(function (r, i) {return (
@@ -136,17 +136,17 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
-                  _react2.default.createElement("div", null, "Runde ", diver.dive.position, "/", event.rounds),
-                  _react2.default.createElement("div", null, "Stup ", diver.dive.dive)),
+                  _react2.default.createElement("div", null, "Round ", event.round, "/", event.rounds),
+                  _react2.default.createElement("div", null, "Dive ", diver.dive.dive)),
 
                 _react2.default.createElement("div", { className: "item" },
-                  _react2.default.createElement("div", null, "Vanskelighetsgrad"),
+                  _react2.default.createElement("div", null, "DD"),
                   _react2.default.createElement("div", null, diver.dive.dd))),
 
 
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
-                  _react2.default.createElement("div", null, "N\xE5v\xE6rende plassering"),
+                  _react2.default.createElement("div", null, "Current rank"),
                   _react2.default.createElement("div", null, diver.rank)),
 
                 _react2.default.createElement("div", { className: "item" }))));
@@ -162,11 +162,11 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
-                  _react2.default.createElement("div", null, "Runde ", event.round, "/", event.rounds)),
+                  _react2.default.createElement("div", null, "Round ", event.round, "/", event.rounds)),
 
                 _react2.default.createElement("div", { className: "item" },
-                  _react2.default.createElement("div", null, "Stup ", _react2.default.createElement("strong", null, diver.dive.result)),
-                  _react2.default.createElement("div", null, "Total ", _react2.default.createElement("strong", null, diver.dive.total)))),
+                  _react2.default.createElement("div", null, "Dive ", _react2.default.createElement("strong", null, diver.dive.result)),
+                  _react2.default.createElement("div", null, "Total ", _react2.default.createElement("strong", null, diver.result)))),
 
 
               _react2.default.createElement("div", { className: "data judgeAwards" },
@@ -501,7 +501,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                   startlist ? "Startlist" : "Result round " + event.round)),
 
 
-              results.map(function (r, i) {return (
+              results.filter(function (r) {return r.rank > 0;}).map(function (r, i) {return (
                   _react2.default.createElement("div", { className: "resultline", key: i },
                     _react2.default.createElement("div", {
                       className: "position",
