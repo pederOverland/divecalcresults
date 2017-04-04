@@ -76,7 +76,7 @@ class Scoreboard extends React.Component {
                 {startlist ? "Startlist" : "Result round " + event.round}
               </div>
             </div>
-            {results.map((r, i) => (
+            {results.filter(r=>r.rank>0).map((r, i) => (
               <div className="resultline" key={i}>
                 <div
                   className="position"

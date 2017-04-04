@@ -11,6 +11,7 @@ export default {
     "IT": '/img/flags/italy.svg',
     "JSS": '/img/flags/sweden.svg',
     "KSTK": '/img/flags/norway.svg',
+    "KS.": '/img/flags/norway.svg',
     "LUK": '/img/flags/denmark.svg',
     "MKK": '/img/flags/sweden.svg',
     "Monaco": '/img/flags/monaco.svg',
