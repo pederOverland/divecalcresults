@@ -22,6 +22,7 @@ export default {
     "SPIF": '/img/flags/sweden.svg',
     "Spinn": '/img/flags/norway.svg',
     "Swiss": '/img/flags/switzerland.svg',
+    "Sw.": '/img/flags/switzerland.svg',
     "Fribourg": '/img/flags/switzerland.svg',
     "SDG": '/img/flags/switzerland.svg',
     "SDRD": '/img/flags/switzerland.svg',

@@ -32,7 +32,10 @@ export default class Bigscreen extends React.Component {
 class Scoreboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: startList, slice: 1 };
+    this.state = { slice: 1 };
+  }
+  componentWillReceiveProps() {
+    this.setState({ slice: 1 });
   }
   render() {
     if (this.timeout) {
@@ -43,6 +46,7 @@ class Scoreboard extends React.Component {
     const data = this.props;
     const diver = data.diver;
     const event = data.event;
+    const logo = logos[diver.team];
     switch (data.action) {
       case "startlist":
       case "results":
@@ -59,7 +63,7 @@ class Scoreboard extends React.Component {
           }
           this.timeout = setTimeout(
             (() => this.setState({ slice: this.state.slice + 1 })).bind(this),
-            10000
+            15000
           );
         }
         return (
@@ -69,15 +73,18 @@ class Scoreboard extends React.Component {
                 {event.name}
               </div>
               <div className="description">
-                {startlist ? "Startlist" : "Result after round " + event.round}
+                {startlist ? "Startlist" : "Result round " + event.round}
               </div>
             </div>
             {results.map((r, i) => (
               <div className="resultline" key={i}>
-                <div className="position">
-                  {startlist ? r.position : r.rank}
+                <div
+                  className="position"
+                  style={{ backgroundImage: "url(" + logos[r.team] + ")" }}
+                />
+                <div className="name">
+                  {startlist ? r.position : r.rank}. {r.name}
                 </div>
-                <div className="name">{r.name}</div>
                 {!startlist && <div className="points">{r.result}</div>}
               </div>
             ))}
@@ -141,7 +148,6 @@ class Scoreboard extends React.Component {
         const match = /(\d+)(\w)/.exec(diver.dive.dive);
         const diveName = dives[match[1]];
         const divePos = match[2];
-        const logo = logos[diver.team];
         return (
           <div className="standings">
             <div className="standingsHeader">
@@ -151,16 +157,17 @@ class Scoreboard extends React.Component {
               <div className="description">
                 {"Top " +
                   event.results.slice(0, 5).length +
-                  " after round " +
+                  " round " +
                   event.round}
               </div>
             </div>
             {event.results.slice(0, 5).map((r, i) => (
               <div className="resultline" key={i}>
-                <div className="position">
-                  {r.rank}
-                </div>
-                <div className="name">{r.name}</div>
+                <div
+                  className="position"
+                  style={{ backgroundImage: "url(" + logos[r.team] + ")" }}
+                />
+                <div className="name">{r.rank}. {r.name}</div>
                 <div className="points">{r.result}</div>
               </div>
             ))}
@@ -179,10 +186,10 @@ class Scoreboard extends React.Component {
             </div>
             {data.action == "dive"
               ? <div className="whiteline awardline">
-                  <div>Position: {diver.rank}</div>
+                  <div>Current rank: {diver.rank}</div>
                   <div>Total: {diver.result}</div>
                   <div>{diveName}</div>
-                  </div>
+                </div>
               : false}
             {data.action == "awards"
               ? <div className="whiteline awardline">
@@ -195,7 +202,7 @@ class Scoreboard extends React.Component {
               ? <div className="whiteline awardline">
                   <div>Dive: {diver.dive.result}</div>
                   <div>Total: {diver.result}</div>
-                  <div>Position: {diver.rank}</div>
+                  <div>Rank: {diver.rank}</div>
                 </div>
               : false}
             {diver.needAwards

@@ -457,8 +457,11 @@ Bigscreen = function (_React$Component) {_inherits(Bigscreen, _React$Component);
 Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Component2);
   function Scoreboard(props) {_classCallCheck(this, Scoreboard);var _this3 = _possibleConstructorReturn(this, (Scoreboard.__proto__ || Object.getPrototypeOf(Scoreboard)).call(this,
     props));
-    _this3.state = { data: startList, slice: 1 };return _this3;
-  }_createClass(Scoreboard, [{ key: "render", value: function render()
+    _this3.state = { slice: 1 };return _this3;
+  }_createClass(Scoreboard, [{ key: "componentWillReceiveProps", value: function componentWillReceiveProps()
+    {
+      this.setState({ slice: 1 });
+    } }, { key: "render", value: function render()
     {var _this4 = this;
       if (this.timeout) {
         clearTimeout(this.timeout);
@@ -468,6 +471,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
       var data = this.props;
       var diver = data.diver;
       var event = data.event;
+      var logo = _logos2.default[diver.team];
       switch (data.action) {
         case "startlist":
         case "results":
@@ -484,7 +488,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
             }
             this.timeout = setTimeout(
             function () {return _this4.setState({ slice: _this4.state.slice + 1 });}.bind(this),
-            10000);
+            15000);
 
           }
           return (
@@ -494,15 +498,18 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                   event.name),
 
                 _react2.default.createElement("div", { className: "description" },
-                  startlist ? "Startlist" : "Result after round " + event.round)),
+                  startlist ? "Startlist" : "Result round " + event.round)),
 
 
               results.map(function (r, i) {return (
                   _react2.default.createElement("div", { className: "resultline", key: i },
-                    _react2.default.createElement("div", { className: "position" },
-                      startlist ? r.position : r.rank),
+                    _react2.default.createElement("div", {
+                      className: "position",
+                      style: { backgroundImage: "url(" + _logos2.default[r.team] + ")" } }),
 
-                    _react2.default.createElement("div", { className: "name" }, r.name),
+                    _react2.default.createElement("div", { className: "name" },
+                      startlist ? r.position : r.rank, ". ", r.name),
+
                     !startlist && _react2.default.createElement("div", { className: "points" }, r.result)));}),
 
 
@@ -566,7 +573,6 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
           var match = /(\d+)(\w)/.exec(diver.dive.dive);
           var diveName = _dives2.default[match[1]];
           var divePos = match[2];
-          var logo = _logos2.default[diver.team];
           return (
             _react2.default.createElement("div", { className: "standings" },
               _react2.default.createElement("div", { className: "standingsHeader" },
@@ -576,16 +582,17 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                 _react2.default.createElement("div", { className: "description" },
                   "Top " +
                   event.results.slice(0, 5).length +
-                  " after round " +
+                  " round " +
                   event.round)),
 
 
               event.results.slice(0, 5).map(function (r, i) {return (
                   _react2.default.createElement("div", { className: "resultline", key: i },
-                    _react2.default.createElement("div", { className: "position" },
-                      r.rank),
+                    _react2.default.createElement("div", {
+                      className: "position",
+                      style: { backgroundImage: "url(" + _logos2.default[r.team] + ")" } }),
 
-                    _react2.default.createElement("div", { className: "name" }, r.name),
+                    _react2.default.createElement("div", { className: "name" }, r.rank, ". ", r.name),
                     _react2.default.createElement("div", { className: "points" }, r.result)));}),
 
 
@@ -604,7 +611,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
 
               data.action == "dive" ?
               _react2.default.createElement("div", { className: "whiteline awardline" },
-                _react2.default.createElement("div", null, "Position: ", diver.rank),
+                _react2.default.createElement("div", null, "Current rank: ", diver.rank),
                 _react2.default.createElement("div", null, "Total: ", diver.result),
                 _react2.default.createElement("div", null, diveName)) :
 
@@ -620,7 +627,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
               _react2.default.createElement("div", { className: "whiteline awardline" },
                 _react2.default.createElement("div", null, "Dive: ", diver.dive.result),
                 _react2.default.createElement("div", null, "Total: ", diver.result),
-                _react2.default.createElement("div", null, "Position: ", diver.rank)) :
+                _react2.default.createElement("div", null, "Rank: ", diver.rank)) :
 
               false,
               diver.needAwards ?
@@ -1038,6 +1045,7 @@ ___scope___.file("logos.js", function(exports, require, module, __filename, __di
     "SPIF": '/img/flags/sweden.svg',
     "Spinn": '/img/flags/norway.svg',
     "Swiss": '/img/flags/switzerland.svg',
+    "Sw.": '/img/flags/switzerland.svg',
     "Fribourg": '/img/flags/switzerland.svg',
     "SDG": '/img/flags/switzerland.svg',
     "SDRD": '/img/flags/switzerland.svg',
@@ -1050,7 +1058,7 @@ ___scope___.file("logos.js", function(exports, require, module, __filename, __di
 });
 ___scope___.file("scoreboard.scss", function(exports, require, module, __filename, __dirname){
 
-__fsbx_css("scoreboard.scss", "@import url(\"https://fonts.googleapis.com/css?family=Roboto\");\n* {\n  box-sizing: border-box; }\n\nbody {\n  font-size: 28px;\n  font-family: roboto; }\n  body.bigscreen {\n    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(\"/img/ado.jpg\") no-repeat;\n    background-size: auto, cover; }\n\ndiv.bigscreen .standings {\n  width: 94vw;\n  height: 90vh;\n  position: absolute;\n  left: 3vw;\n  top: 3vh;\n  display: flex;\n  flex-direction: column; }\n  div.bigscreen .standings:first-child:not(:last-child),\n  div.bigscreen .standings + .standings {\n    left: 1vw;\n    width: 47vw;\n    font-size: 0.8em; }\n  div.bigscreen .standings + .standings {\n    left: 51vw; }\n  div.bigscreen .standings .spacer {\n    flex: 1; }\n  div.bigscreen .standings .standingsHeader {\n    position: relative;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    margin-left: 100px;\n    min-height: 100px;\n    padding: 0;\n    padding-left: 20px;\n    color: inherit;\n    border-radius: 0 50px 50px 0;\n    display: flex;\n    flex-direction: column;\n    justify-content: center; }\n    div.bigscreen .standings .standingsHeader:before {\n      content: \"\";\n      position: absolute;\n      width: 100px;\n      height: 100px;\n      background: url(/img/diver.svg);\n      background-size: cover;\n      left: -100px; }\n  div.bigscreen .standings .standingsFooter {\n    background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    padding: 0 20px;\n    color: white;\n    margin-top: 4px;\n    width: 100%;\n    height: 80px;\n    border-radius: 40px;\n    line-height: 80px;\n    position: absolute;\n    bottom: 0; }\n  div.bigscreen .standings .whiteline {\n    margin: 6px 30px 0;\n    height: 44px;\n    border-radius: 22px;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    align-items: center;\n    display: flex;\n    padding-left: 20px; }\n    div.bigscreen .standings .whiteline.awardline {\n      padding-left: 0;\n      justify-content: space-around; }\n  div.bigscreen .standings .resultline {\n    margin: 6px 30px 0;\n    padding-left: 0;\n    border-radius: 22px;\n    height: 44px; }\n    div.bigscreen .standings .resultline .position {\n      border-radius: 22px;\n      width: 44px;\n      height: 44px;\n      line-height: 44px; }\n  div.bigscreen .standings .diver {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    display: flex;\n    border-radius: 50px;\n    justify-content: space-between;\n    overflow: hidden; }\n    div.bigscreen .standings .diver .name {\n      flex: 1;\n      font-size: 1.3em;\n      align-self: center; }\n    div.bigscreen .standings .diver .round {\n      align-self: center;\n      padding: 0px 20px; }\n    div.bigscreen .standings .diver .position {\n      height: 100px;\n      width: 100px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.5em;\n      background-size: cover; }\n    div.bigscreen .standings .diver .bsdive {\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      padding-right: 30px;\n      text-align: center; }\n\n.position {\n  display: inline-block;\n  background: #fbc525;\n  height: 36px;\n  width: 36px;\n  text-align: center;\n  line-height: 36px;\n  font-size: 20px;\n  margin-right: 10px; }\n\n.standings {\n  -webkit-app-region: drag;\n  width: 70vw;\n  height: 80vh;\n  position: absolute;\n  left: 15vw;\n  bottom: 5vh; }\n  .standings .standingsHeader {\n    background-image: url(\"img/logo.svg\"), linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    background-repeat: no-repeat;\n    background-position: right;\n    background-size: auto 100%;\n    padding: 10px 20px;\n    color: white; }\n    .standings .standingsHeader .competition {\n      font-size: 1.4em;\n      margin-bottom: 10px; }\n    .standings .standingsHeader .description {\n      font-size: 1.1em; }\n  .standings .standingsFooter {\n    background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    padding: 4px 20px;\n    color: white;\n    margin-top: 4px; }\n  .standings .resultline {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    padding: 0 20px;\n    margin-top: 4px;\n    display: flex;\n    height: 36px;\n    align-items: center; }\n    .standings .resultline .name {\n      flex: 1; }\n\n.dive,\n.awards {\n  -webkit-app-region: drag;\n  width: 80vw;\n  margin: 0 10vw;\n  position: absolute;\n  bottom: 5vh; }\n  .dive .header,\n  .awards .header {\n    font-size: 1em;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    padding: 0 20px; }\n    .dive .header .position,\n    .awards .header .position {\n      margin-right: 10px;\n      font-size: 1em; }\n  .dive .data,\n  .awards .data {\n    display: flex;\n    flex-wrap: wrap; }\n    .dive .data .item,\n    .awards .data .item {\n      background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n      margin-top: 4px;\n      padding: 4px 20px 4px 10px;\n      width: 50%;\n      display: flex;\n      justify-content: space-between; }\n      .dive .data .item:nth-child(odd),\n      .awards .data .item:nth-child(odd) {\n        padding: 4px 10px 4px 20px;\n        width: calc(50% - 4px);\n        margin-right: 4px; }\n\n.awards .data .item {\n  justify-content: space-around; }\n\n.awards .data.judgeAwards {\n  margin-top: 4px;\n  background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n  padding: 4px 0;\n  justify-content: space-around; }\n\n/*# sourceMappingURL=scoreboard.scss.map */");
+__fsbx_css("scoreboard.scss", "@import url(\"https://fonts.googleapis.com/css?family=Roboto\");\n* {\n  box-sizing: border-box; }\n\nbody {\n  font-size: 28px;\n  font-family: roboto; }\n  body.bigscreen {\n    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(\"/img/ado.jpg\") no-repeat;\n    background-size: auto, cover; }\n\ndiv.bigscreen .standings {\n  width: 94vw;\n  height: 90vh;\n  position: absolute;\n  left: 3vw;\n  top: 3vh;\n  display: flex;\n  flex-direction: column; }\n  div.bigscreen .standings:first-child:not(:last-child),\n  div.bigscreen .standings + .standings {\n    left: 1vw;\n    width: 47vw;\n    font-size: 0.8em; }\n  div.bigscreen .standings + .standings {\n    left: 51vw; }\n  div.bigscreen .standings .spacer {\n    flex: 1; }\n  div.bigscreen .standings .standingsHeader {\n    position: relative;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    margin-left: 100px;\n    min-height: 100px;\n    padding: 0;\n    padding-left: 20px;\n    color: inherit;\n    border-radius: 0 50px 50px 0;\n    display: flex;\n    flex-direction: column;\n    justify-content: center; }\n    div.bigscreen .standings .standingsHeader:before {\n      content: \"\";\n      position: absolute;\n      width: 100px;\n      height: 100px;\n      background: url(/img/bologo_yellow.svg);\n      background-size: cover;\n      left: -100px; }\n  div.bigscreen .standings .standingsFooter {\n    background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    padding: 0 20px;\n    color: white;\n    margin-top: 4px;\n    width: 100%;\n    height: 80px;\n    border-radius: 40px;\n    line-height: 80px;\n    position: absolute;\n    bottom: 0; }\n  div.bigscreen .standings .whiteline {\n    margin: 6px 30px 0;\n    height: 44px;\n    border-radius: 22px;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    align-items: center;\n    display: flex;\n    padding-left: 20px; }\n    div.bigscreen .standings .whiteline.awardline {\n      padding-left: 0;\n      justify-content: space-around; }\n  div.bigscreen .standings .resultline {\n    margin: 6px 30px 0;\n    padding-left: 0;\n    border-radius: 22px;\n    height: 44px; }\n    div.bigscreen .standings .resultline .position {\n      border-radius: 22px;\n      width: 44px;\n      height: 44px;\n      line-height: 44px; }\n  div.bigscreen .standings .diver {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    display: flex;\n    border-radius: 50px;\n    justify-content: space-between;\n    overflow: hidden; }\n    div.bigscreen .standings .diver .name {\n      flex: 1;\n      font-size: 1.3em;\n      align-self: center; }\n    div.bigscreen .standings .diver .round {\n      align-self: center;\n      padding: 0px 20px; }\n    div.bigscreen .standings .diver .position {\n      height: 100px;\n      width: 100px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.5em;\n      background-size: cover; }\n    div.bigscreen .standings .diver .bsdive {\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      padding-right: 30px;\n      text-align: center; }\n      div.bigscreen .standings .diver .bsdive .code {\n        font-size: 40px; }\n\n.position {\n  display: inline-block;\n  background: #fbc525;\n  height: 36px;\n  width: 36px;\n  text-align: center;\n  line-height: 36px;\n  font-size: 20px;\n  margin-right: 10px; }\n\n.standings {\n  -webkit-app-region: drag;\n  width: 70vw;\n  height: 80vh;\n  position: absolute;\n  left: 15vw;\n  bottom: 5vh; }\n  .standings .standingsHeader {\n    background-image: url(\"img/logo.svg\"), linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    background-repeat: no-repeat;\n    background-position: right;\n    background-size: auto 100%;\n    padding: 10px 20px;\n    color: white; }\n    .standings .standingsHeader .competition {\n      font-size: 1.4em;\n      margin-bottom: 10px; }\n    .standings .standingsHeader .description {\n      font-size: 1.1em; }\n  .standings .standingsFooter {\n    background: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));\n    padding: 4px 20px;\n    color: white;\n    margin-top: 4px; }\n  .standings .resultline {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    padding: 0 20px;\n    margin-top: 4px;\n    display: flex;\n    height: 36px;\n    align-items: center; }\n    .standings .resultline .name {\n      flex: 1; }\n\n.dive,\n.awards {\n  -webkit-app-region: drag;\n  width: 80vw;\n  margin: 0 10vw;\n  position: absolute;\n  bottom: 5vh; }\n  .dive .header,\n  .awards .header {\n    font-size: 1em;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n    padding: 0 20px; }\n    .dive .header .position,\n    .awards .header .position {\n      margin-right: 10px;\n      font-size: 1em; }\n  .dive .data,\n  .awards .data {\n    display: flex;\n    flex-wrap: wrap; }\n    .dive .data .item,\n    .awards .data .item {\n      background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n      margin-top: 4px;\n      padding: 4px 20px 4px 10px;\n      width: 50%;\n      display: flex;\n      justify-content: space-between; }\n      .dive .data .item:nth-child(odd),\n      .awards .data .item:nth-child(odd) {\n        padding: 4px 10px 4px 20px;\n        width: calc(50% - 4px);\n        margin-right: 4px; }\n\n.awards .data .item {\n  justify-content: space-around; }\n\n.awards .data.judgeAwards {\n  margin-top: 4px;\n  background: linear-gradient(to right, white, rgba(255, 255, 255, 0.6));\n  padding: 4px 0;\n  justify-content: space-around; }\n\n/*# sourceMappingURL=scoreboard.scss.map */");
 });
 });
 FuseBox.pkg("fusebox-hot-reload", {}, function(___scope___){
