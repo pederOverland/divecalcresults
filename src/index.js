@@ -32,7 +32,7 @@ const server = net.createServer(socket => {
   });
 });
 
-server.listen(9090, "127.0.0.1");
+server.listen(9090);
 app.listen(9000);
 
 notifier.notify("Listening on 9000");
