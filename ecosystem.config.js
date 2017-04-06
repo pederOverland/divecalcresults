@@ -10,16 +10,6 @@ module.exports = {
       script: "src/index.js",
       env: {
         NODE_ENV: "screen"
-      },
-      watch: true
-    },
-
-    // Second application
-    {
-      name: "STREAM",
-      script: "src/index.js",
-      env: {
-        NODE_ENV: "stream"
       }
     }
   ]

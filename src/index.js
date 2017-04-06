@@ -5,9 +5,7 @@ const IO = require("koa-socket");
 const bodyParser = require("koa-bodyparser");
 const Router = require("koa-router");
 const notifier = require("node-notifier");
-const config = process.env.NODE_ENV == "stream"
-  ? { tcpPort: 8080, port: 8000 }
-  : { tcpPort: 9090, port: 9000 };
+const config = { tcpPort: 9090, port: 9000 };
 
 const app = new Koa();
 const router = new Router();
@@ -16,7 +14,6 @@ const io = new IO({
 });
 
 router.post("/data/:channel", ctx => {
-  console.log(ctx.request.body, ctx.params.channel);
   io.broadcast(ctx.params.channel, ctx.request.body);
   ctx.body = { hi: true };
 });
