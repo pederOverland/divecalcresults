@@ -167,7 +167,7 @@ class Scoreboard extends React.Component {
                   className="position"
                   style={{ backgroundImage: "url(" + logos[r.team] + ")" }}
                 />
-                <div className="name">{r.rank}. {r.name}</div>
+                <div className="name">{r.rank}. {r.name.toLowerCase()}</div>
                 <div className="points">{r.result}</div>
               </div>
             ))}

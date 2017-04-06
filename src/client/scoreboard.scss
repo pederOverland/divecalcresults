@@ -199,6 +199,9 @@ div.bigscreen {
             margin-right: $inner-padding;
             font-size: 1em;
         }
+        .name{
+            text-transform: capitalize;
+        }
     }
     .data {
         display: flex;
