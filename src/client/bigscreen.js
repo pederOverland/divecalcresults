@@ -83,7 +83,7 @@ class Scoreboard extends React.Component {
                   style={{ backgroundImage: "url(" + logos[r.team] + ")" }}
                 />
                 <div className="name">
-                  {startlist ? r.position : r.rank}. {r.name}
+                  {startlist ? r.position : r.rank}. {r.name.toLowerCase()}
                 </div>
                 {!startlist && <div className="points">{r.result}</div>}
               </div>
@@ -99,7 +99,7 @@ class Scoreboard extends React.Component {
           <div className="dive">
             <div className="header">
               <span className="position">{diver.position}</span>
-              <span className="name">{diver.name}</span>
+              <span className="name">{diver.name.toLowerCase()}</span>
             </div>
             <div className="data">
               <div className="item">
@@ -125,7 +125,7 @@ class Scoreboard extends React.Component {
           <div className="awards">
             <div className="header">
               <span className="position">{diver.position}</span>
-              <span className="name">{diver.name}</span>
+              <span className="name">{diver.name.toLowerCase()}</span>
             </div>
             <div className="data">
               <div className="item">
@@ -177,7 +177,7 @@ class Scoreboard extends React.Component {
                 className="position"
                 style={{ backgroundImage: "url(" + logo + ")" }}
               />
-              <div className="name">{diver.position + ". " + diver.name}</div>
+              <div className="name">{diver.position + ". " + diver.name.toLowerCase()}</div>
               <div className="round">{event.round + "/" + event.rounds}</div>
               <div className="bsdive">
                 <div className="code">{diver.dive.dive}</div>

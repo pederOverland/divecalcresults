@@ -58,7 +58,7 @@ export default class Scoreboard extends React.Component {
                 <div className="position">
                   {startlist ? r.position : r.rank}
                 </div>
-                <div className="name">{r.name}</div>
+                <div className="name">{r.name.toLowerCase()}</div>
                 {!startlist && <div className="points">{r.result}</div>}
               </div>
             ))}
@@ -72,7 +72,7 @@ export default class Scoreboard extends React.Component {
           <div className="dive">
             <div className="header">
               <span className="position">{diver.position}</span>
-              <span className="name">{diver.name}</span>
+              <span className="name">{diver.name.toLowerCase()}</span>
             </div>
             <div className="data">
               <div className="item">
@@ -98,7 +98,7 @@ export default class Scoreboard extends React.Component {
           <div className="awards">
             <div className="header">
               <span className="position">{diver.position}</span>
-              <span className="name">{diver.name}</span>
+              <span className="name">{diver.name.toLowerCase()}</span>
             </div>
             <div className="data">
               <div className="item">

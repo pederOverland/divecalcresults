@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "stream": "set NODE_ENV=stream&& nodemon src/index.js",
-    "screen": "set NODE_ENV=screen&& nodemon src/index.js",
+    "start": "pm2 startOrRestart ecosystem.config.js",
     "electron": "babel src --out-dir server && babel -o electron.run.js electron.js",
     "server": "babel src --out-dir server && nodemon server/index.js"
   },

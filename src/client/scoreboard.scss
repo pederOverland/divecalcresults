@@ -104,6 +104,7 @@ div.bigscreen {
                 flex: 1;
                 font-size: 1.3em;
                 align-self: center;
+                text-transform: capitalize;
             }
             .round{
                 align-self: center;
@@ -152,10 +153,7 @@ div.bigscreen {
     left: 15vw;
     bottom: 5vh;
     .standingsHeader {
-        background-image: url("img/logo.svg"), linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));
-        background-repeat: no-repeat;
-        background-position: right;
-        background-size: auto 100%;
+        background-image: linear-gradient(to right, rgba(115, 173, 193, 0.8), rgba(115, 173, 193, 0.4));
         padding: 10px 20px;
         color: white;
         .competition {
@@ -181,6 +179,7 @@ div.bigscreen {
         align-items: center;
         .name {
             flex: 1;
+            text-transform: capitalize;
         }
     }
 }
