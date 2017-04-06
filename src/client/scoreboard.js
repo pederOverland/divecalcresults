@@ -5,7 +5,7 @@ export default class Scoreboard extends React.Component {
     super(props);
     this.state = {data: {}, slice: 1 };
     this.socket = io("/divecalc");
-    this.socket.on("divecalc", data => {
+    this.socket.on("stream", data => {
       console.log(data);
       this.setState({ data: data, slice: 1 });
     });
@@ -71,8 +71,8 @@ export default class Scoreboard extends React.Component {
         return (
           <div className="dive">
             <div className="header">
-              <span className="position">{diver.position}</span>
-              <span className="name">{diver.name.toLowerCase()}</span>
+              <div className="position">{diver.position}</div>
+              <span className="name">{' '+diver.name.toLowerCase()}</span>
             </div>
             <div className="data">
               <div className="item">
@@ -98,11 +98,12 @@ export default class Scoreboard extends React.Component {
           <div className="awards">
             <div className="header">
               <span className="position">{diver.position}</span>
-              <span className="name">{diver.name.toLowerCase()}</span>
+              <span className="name">{' '+diver.name.toLowerCase()}</span>
             </div>
             <div className="data">
               <div className="item">
                 <div>Round {event.round}/{event.rounds}</div>
+                <div>Current rank: {diver.rank}</div>
               </div>
               <div className="item">
                 <div>Dive <strong>{diver.dive.result}</strong></div>

@@ -6,7 +6,7 @@ export default class Bigscreen extends React.Component {
   constructor(props) {
     super(props);
     this.socket = io("/divecalc");
-    this.socket.on("divecalc", data => {
+    this.socket.on("screen", data => {
       console.log(data);
       const key = data.event.name;
       const c = Object.assign({}, this.state.competitions);
@@ -76,7 +76,7 @@ class Scoreboard extends React.Component {
                 {startlist ? "Startlist" : "Result round " + event.round}
               </div>
             </div>
-            {results.filter(r=>r.rank>0).map((r, i) => (
+            {results.map((r, i) => (
               <div className="resultline" key={i}>
                 <div
                   className="position"
@@ -156,12 +156,12 @@ class Scoreboard extends React.Component {
               </div>
               <div className="description">
                 {"Top " +
-                  event.results.slice(0, 5).length +
+                  event.results.filter(r=>r.rank > 0).slice(0, 5).length +
                   " round " +
                   event.round}
               </div>
             </div>
-            {event.results.slice(0, 5).map((r, i) => (
+            {event.results.filter(r=>r.rank > 0).slice(0, 5).map((r, i) => (
               <div className="resultline" key={i}>
                 <div
                   className="position"
@@ -188,7 +188,7 @@ class Scoreboard extends React.Component {
               ? <div className="whiteline awardline">
                   <div>Current rank: {diver.rank}</div>
                   <div>Total: {diver.result}</div>
-                  <div>{diveName}</div>
+                  <div className="divename">{diveName}</div>
                 </div>
               : false}
             {data.action == "awards"
