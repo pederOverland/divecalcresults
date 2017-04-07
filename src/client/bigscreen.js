@@ -6,7 +6,7 @@ export default class Bigscreen extends React.Component {
   constructor(props) {
     super(props);
     this.socket = io("/divecalc");
-    this.socket.on("screen", data => {
+    this.socket.on(this.props.channel, data => {
       console.log(data);
       const key = data.event.name;
       const c = Object.assign({}, this.state.competitions);
@@ -16,7 +16,7 @@ export default class Bigscreen extends React.Component {
     this.state = { competitions: {} };
   }
   componentWillUnmount() {
-    this.socket.off("divecalc");
+    this.socket.off(this.props.channel);
   }
   render() {
     return (

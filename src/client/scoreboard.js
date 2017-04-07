@@ -5,13 +5,13 @@ export default class Scoreboard extends React.Component {
     super(props);
     this.state = {data: {}, slice: 1 };
     this.socket = io("/divecalc");
-    this.socket.on("stream", data => {
+    this.socket.on(this.props.channel, data => {
       console.log(data);
       this.setState({ data: data, slice: 1 });
     });
   }
   componentWillUnmount() {
-    this.socket.off("divecalc");
+    this.socket.off(this.props.channel);
   }
   render() {
     if (this.timeout) {
@@ -77,11 +77,10 @@ export default class Scoreboard extends React.Component {
             <div className="data">
               <div className="item">
                 <div>Round {event.round}/{event.rounds}</div>
-                <div>Dive {diver.dive.dive}</div>
               </div>
               <div className="item">
-                <div>DD</div>
-                <div>{diver.dive.dd}</div>
+                <div>Dive {diver.dive.dive}</div>
+                <div>DD {diver.dive.dd}</div>
               </div>
             </div>
             <div className="data">
