@@ -58,7 +58,7 @@ export default class Scoreboard extends React.Component {
                 <div className="position">
                   {startlist ? r.position : r.rank}
                 </div>
-                <div className="name">{r.name.toLowerCase()}</div>
+                <div className="name">{r.name.toLowerCase()}{r.nationality && " ("+r.nationality+")"}</div>
                 {!startlist && <div className="points">{r.result}</div>}
               </div>
             ))}
@@ -72,7 +72,7 @@ export default class Scoreboard extends React.Component {
           <div className="dive">
             <div className="header">
               <div className="position">{diver.position}</div>
-              <span className="name">{' '+diver.name.toLowerCase()}</span>
+              <span className="name">{' '+diver.name.toLowerCase()}{diver.nationality && " ("+diver.nationality+")"}</span>
             </div>
             <div className="data">
               <div className="item">
@@ -93,11 +93,12 @@ export default class Scoreboard extends React.Component {
           </div>
         );
       case "awards":
+
         return (
           <div className="awards">
             <div className="header">
               <span className="position">{diver.position}</span>
-              <span className="name">{' '+diver.name.toLowerCase()}</span>
+              <span className="name">{' '+diver.name.toLowerCase()}{diver.nationality && " ("+diver.nationality+")"}</span>
             </div>
             <div className="data">
               <div className="item">
@@ -110,10 +111,21 @@ export default class Scoreboard extends React.Component {
               </div>
             </div>
             <div className="data judgeAwards">
-              {diver.dive.actualAwards.map((a, i) => (
+              {diver.dive.effectiveAwards.map((a, i) => (
                 <div className="judgeAward" key={i}>{a}</div>
               ))}
             </div>
+              {(diver.dive.penalty != "0.0" || diver.dive.maxAward != "10") ?
+                <div className="data judgeAwards">
+                  <div className="judgeAward">
+                    {diver.dive.penalty != "0.0" && <div>Penalty: {diver.dive.penalty}</div>}
+                  </div>
+                  <div className="judgeAward">
+                    {diver.dive.maxAward != "10" && <div>Max Award: {diver.dive.maxAward}</div>}
+                  </div>
+                </div>
+                : false
+              }
           </div>
         );
       default:

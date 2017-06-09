@@ -42,5 +42,7 @@ export default {
     "Tiirat": '/img/flags/finland.svg',
     "Va.": '/img/flags/finland.svg',
     "VanDi": '/img/flags/finland.svg',
-    "VSS": '/img/flags/sweden.svg'
+    "VSS": '/img/flags/sweden.svg',
+    "BLR": '/img/flags/belarus.svg',
+    "UKR": '/img/flags/ukraine.svg',
 }

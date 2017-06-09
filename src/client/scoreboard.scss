@@ -28,10 +28,10 @@ div.bigscreen {
             left: 1vw;
             width: 47vw;
             font-size: 0.96em;
-            .divename{
+            .divename {
                 display: none;
             }
-            .diver .name{
+            .diver .name {
                 font-size: 1em;
             }
         }
@@ -58,7 +58,7 @@ div.bigscreen {
                 position: absolute;
                 width: 100px;
                 height: 100px;
-                background: url(/img/bologo_yellow.svg);
+                background: url(/img/BStKlogo.svg);
                 background-size: cover;
                 left: -100px;
             }
@@ -112,7 +112,7 @@ div.bigscreen {
                 align-self: center;
                 text-transform: capitalize;
             }
-            .round{
+            .round {
                 align-self: center;
                 padding: 0px 20px;
             }
@@ -132,7 +132,7 @@ div.bigscreen {
                 justify-content: center;
                 padding-right: 30px;
                 text-align: center;
-                .code{
+                .code {
                     font-size: 40px;
                 }
             }
@@ -207,7 +207,7 @@ div.bigscreen {
             line-height: 48px;
             font-size: 28px;
         }
-        .name{
+        .name {
             text-transform: capitalize;
         }
     }

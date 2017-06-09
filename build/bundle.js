@@ -48,6 +48,7 @@ ___scope___.file("index.js", function(exports, require, module, __filename, __di
 var _reactDom = require("react-dom");var _reactDom2 = _interopRequireDefault(_reactDom);
 var _scoreboard = require("./scoreboard.js");var _scoreboard2 = _interopRequireDefault(_scoreboard);
 var _bigscreen = require("./bigscreen.js");var _bigscreen2 = _interopRequireDefault(_bigscreen);
+var _infoscreen = require("./infoscreen.js");var _infoscreen2 = _interopRequireDefault(_infoscreen);
 require("./scoreboard.scss");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 function getParameterByName(name, url) {
@@ -66,6 +67,8 @@ var channel = getParameterByName("channel");
 
 if (document.body.classList.contains("bigscreen")) {
   _reactDom2.default.render(_react2.default.createElement(_bigscreen2.default, { channel: channel || 'screen' }), document.getElementById("scoreboard"));
+} else if (document.body.classList.contains("infoscreen")) {
+  _reactDom2.default.render(_react2.default.createElement(_infoscreen2.default, { channel: channel || 'screen' }), document.getElementById("scoreboard"));
 } else {
   _reactDom2.default.render(_react2.default.createElement(_scoreboard2.default, { channel: channel || 'stream' }), document.getElementById("scoreboard"));
 }
@@ -132,7 +135,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
                     _react2.default.createElement("div", { className: "position" },
                       startlist ? r.position : r.rank),
 
-                    _react2.default.createElement("div", { className: "name" }, r.name.toLowerCase()),
+                    _react2.default.createElement("div", { className: "name" }, r.name.toLowerCase(), r.nationality && " (" + r.nationality + ")"),
                     !startlist && _react2.default.createElement("div", { className: "points" }, r.result)));}),
 
 
@@ -146,7 +149,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
             _react2.default.createElement("div", { className: "dive" },
               _react2.default.createElement("div", { className: "header" },
                 _react2.default.createElement("div", { className: "position" }, diver.position),
-                _react2.default.createElement("span", { className: "name" }, ' ' + diver.name.toLowerCase())),
+                _react2.default.createElement("span", { className: "name" }, ' ' + diver.name.toLowerCase(), diver.nationality && " (" + diver.nationality + ")")),
 
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
@@ -167,11 +170,12 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
 
         case "awards":
+
           return (
             _react2.default.createElement("div", { className: "awards" },
               _react2.default.createElement("div", { className: "header" },
                 _react2.default.createElement("span", { className: "position" }, diver.position),
-                _react2.default.createElement("span", { className: "name" }, ' ' + diver.name.toLowerCase())),
+                _react2.default.createElement("span", { className: "name" }, ' ' + diver.name.toLowerCase(), diver.nationality && " (" + diver.nationality + ")")),
 
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
@@ -184,9 +188,20 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
 
               _react2.default.createElement("div", { className: "data judgeAwards" },
-                diver.dive.actualAwards.map(function (a, i) {return (
-                    _react2.default.createElement("div", { className: "judgeAward", key: i }, a));}))));
+                diver.dive.effectiveAwards.map(function (a, i) {return (
+                    _react2.default.createElement("div", { className: "judgeAward", key: i }, a));})),
 
+
+              diver.dive.penalty != "0.0" || diver.dive.maxAward != "10" ?
+              _react2.default.createElement("div", { className: "data judgeAwards" },
+                _react2.default.createElement("div", { className: "judgeAward" },
+                  diver.dive.penalty != "0.0" && _react2.default.createElement("div", null, "Penalty: ", diver.dive.penalty)),
+
+                _react2.default.createElement("div", { className: "judgeAward" },
+                  diver.dive.maxAward != "10" && _react2.default.createElement("div", null, "Max Award: ", diver.dive.maxAward))) :
+
+
+              false));
 
 
 
@@ -485,7 +500,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
       var data = this.props;
       var diver = data.diver;
       var event = data.event;
-      var logo = _logos2.default[diver.team];
+      var logo = _logos2.default[diver.nationality || diver.team];
       switch (data.action) {
         case "startlist":
         case "results":
@@ -522,7 +537,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                       style: { backgroundImage: "url(" + _logos2.default[r.team] + ")" } }),
 
                     _react2.default.createElement("div", { className: "name" },
-                      startlist ? r.position : r.rank, ". ", r.name.toLowerCase()),
+                      startlist ? r.position : r.rank, ". ", r.name.toLowerCase(), r.nationality && " (" + r.nationality + ")"),
 
                     !startlist && _react2.default.createElement("div", { className: "points" }, r.result)));}),
 
@@ -532,61 +547,11 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
 
 
 
-        /*
-                                     case "dive":
-                                       return (
-                                         <div className="dive">
-                                           <div className="header">
-                                             <span className="position">{diver.position}</span>
-                                             <span className="name">{diver.name.toLowerCase()}</span>
-                                           </div>
-                                           <div className="data">
-                                             <div className="item">
-                                               <div>Runde {diver.dive.position}/{event.rounds}</div>
-                                               <div>Stup {diver.dive.dive}</div>
-                                             </div>
-                                             <div className="item">
-                                               <div>Vanskelighetsgrad</div>
-                                               <div>{diver.dive.dd}</div>
-                                             </div>
-                                           </div>
-                                           <div className="data">
-                                             <div className="item">
-                                               <div>Nåværende plassering</div>
-                                               <div>{diver.rank}</div>
-                                             </div>
-                                             <div className="item" />
-                                           </div>
-                                         </div>
-                                       );
-                                     case "awards":
-                                       return (
-                                         <div className="awards">
-                                           <div className="header">
-                                             <span className="position">{diver.position}</span>
-                                             <span className="name">{diver.name.toLowerCase()}</span>
-                                           </div>
-                                           <div className="data">
-                                             <div className="item">
-                                               <div>Runde {event.round}/{event.rounds}</div>
-                                             </div>
-                                             <div className="item">
-                                               <div>Stup <strong>{diver.dive.result}</strong></div>
-                                               <div>Total <strong>{diver.dive.total}</strong></div>
-                                             </div>
-                                           </div>
-                                           <div className="data judgeAwards">
-                                             {diver.dive.actualAwards.map((a, i) => (
-                                               <div className="judgeAward" key={i}>{a}</div>
-                                             ))}
-                                           </div>
-                                         </div>
-                                       );
-                                       */
         default:
           var match = /(\d+)(\w)/.exec(diver.dive.dive);
           var diveName = _dives2.default[match[1]];
           var divePos = match[2];
+          var showHeight = ["5", "7.5", "10"].indexOf(diver.dive.height) >= 0;
           return (
             _react2.default.createElement("div", { className: "standings" },
               _react2.default.createElement("div", { className: "standingsHeader" },
@@ -606,7 +571,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                       className: "position",
                       style: { backgroundImage: "url(" + _logos2.default[r.team] + ")" } }),
 
-                    _react2.default.createElement("div", { className: "name" }, r.rank, ". ", r.name.toLowerCase()),
+                    _react2.default.createElement("div", { className: "name" }, r.rank, ". ", r.name.toLowerCase(), r.nationality && " (" + r.nationality + ")"),
                     _react2.default.createElement("div", { className: "points" }, r.result)));}),
 
 
@@ -616,8 +581,14 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                   className: "position",
                   style: { backgroundImage: "url(" + logo + ")" } }),
 
-                _react2.default.createElement("div", { className: "name" }, diver.position + ". " + diver.name.toLowerCase()),
+                showHeight ?
+                _react2.default.createElement("div", { className: "name" }, diver.position + ". " + diver.name.toLowerCase(), diver.nationality && " (" + diver.nationality + ")", " (", event.round + "/" + event.rounds, ")") :
+                _react2.default.createElement("div", { className: "name" }, diver.position + ". " + diver.name.toLowerCase(), diver.nationality && " (" + diver.nationality + ")"),
+
+                showHeight ?
+                _react2.default.createElement("div", { className: "round" }, diver.dive.height, " m") :
                 _react2.default.createElement("div", { className: "round" }, event.round + "/" + event.rounds),
+
                 _react2.default.createElement("div", { className: "bsdive" },
                   _react2.default.createElement("div", { className: "code" }, diver.dive.dive),
                   _react2.default.createElement("div", { className: "dd" }, diver.dive.dd))),
@@ -632,7 +603,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
               false,
               data.action == "awards" ?
               _react2.default.createElement("div", { className: "whiteline awardline" },
-                diver.dive.actualAwards.map(function (a, i) {return (
+                diver.dive.effectiveAwards.map(function (a, i) {return (
                     _react2.default.createElement("div", { className: "result", key: i }, a));})) :
 
 
@@ -644,256 +615,16 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                 _react2.default.createElement("div", null, "Rank: ", diver.rank)) :
 
               false,
-              diver.needAwards ?
-              _react2.default.createElement("div", { className: "whiteline" }, "Score needed to reach position " +
-
-                diver.needAwards[0].toRank + ": " + diver.needAwards[0].award) :
-
+              data.action == "awards" && (diver.dive.penalty != "0.0" || diver.dive.maxAward != "10") ?
+              _react2.default.createElement("div", { className: "whiteline awardline" },
+                diver.dive.penalty != "0.0" && _react2.default.createElement("div", null, "Penalty: ", diver.dive.penalty),
+                diver.dive.maxAward != "10" && _react2.default.createElement("div", null, "Max award: ", diver.dive.maxAward)) :
 
               false));}
 
 
 
     } }]);return Scoreboard;}(_react2.default.Component);
-
-
-var startList = {
-  endDateFmt: "Jan 15, 2017",
-  endDate: 1484470986000,
-  action: "startlist",
-  dateFmt: "Mar 7, 2017",
-  competition: "Landslagstest",
-  place: "AdO arena, Bergen",
-  dateTimeFmt: "3/7/17 1:29 PM",
-  event: {
-    divesPerRound: 1,
-    round: 8,
-    startTimeFmt: "1/15/17 2:00 PM",
-    name: "Teskonkurranse 3m, Forsøk",
-    startTime: 1484485200000,
-    finished: true,
-    pk: 2,
-    endTime: 1484488800000,
-    endTimeFmt: "1/15/17 3:00 PM",
-    type: "TEAM",
-    results: [
-    {
-      result: "220.35",
-      name: "Anne Sofie Moe Holm / Julie Synnøve Thorsen",
-      rank: 1,
-      pk: 4,
-      position: 2,
-      team: "BS.",
-      shortName: "A. Holm / J. Thorsen" },
-
-    {
-      result: "219.90",
-      diffToFirst: "-0.45",
-      name: "Amalie Marie Kupka / Serina Haldorsen",
-      rank: 2,
-      pk: 3,
-      position: 4,
-      team: "BS.",
-      shortName: "A. Kupka / S. Haldorsen" },
-
-    {
-      result: "197.00",
-      diffToFirst: "-23.35",
-      name: "Jonas Erik Thorsen / Martin Nåden Dyrstad",
-      rank: 3,
-      pk: 8,
-      position: 6,
-      team: "B/S",
-      shortName: "J. Thorsen / M. Nåden Dyrstad" },
-
-    {
-      result: "191.35",
-      diffToFirst: "-29.00",
-      name: "Caroline Sofie Kupka / Safyia Elmrani",
-      rank: 4,
-      pk: 5,
-      position: 3,
-      team: "B/S",
-      shortName: "C. Kupka / S. Elmrani" },
-
-    {
-      result: "187.75",
-      diffToFirst: "-32.60",
-      name: "Emil Ruenes Jacobsen / Philip Sandve",
-      rank: 5,
-      pk: 6,
-      position: 1,
-      team: "KS.",
-      shortName: "E. Jacobsen / P. Sandve" },
-
-    {
-      result: "180.80",
-      diffToFirst: "-39.55",
-      name: "Henry Kristiansen / Ulrik Hvarnes Evensen",
-      rank: 6,
-      pk: 7,
-      position: 5,
-      team: "SP.",
-      shortName: "Kristiansen / Hvarnes Evensen" }],
-
-
-    rounds: 8 },
-
-  diver: {
-    result: "187.75",
-    name: "Emil Ruenes Jacobsen / Philip Sandve",
-    rank: 5,
-    pk: 6,
-    position: 1,
-    team: "KS.",
-    dive: {
-      dd: "1.7",
-      actualAwards: ["3.0", "3.5", "3.0"],
-      penalty: "0.0",
-      sum: "9.50",
-      result: "16.15",
-      total: "58.55",
-      effectiveAwards: ["3.0", "3.5", "3.0"],
-      maxAward: "10",
-      position: 3,
-      dive: "401A",
-      height: "3" },
-
-    shortName: "E. Jacobsen / P. Sandve" },
-
-  startDate: 1484470986000,
-  startDateFmt: "Jan 15, 2017",
-  latestUpdate: 1488889771221 };
-
-
-var baseAward = {
-  endDateFmt: "Jan 15, 2017",
-  endDate: 1484470986000,
-  action: "awards",
-  dateFmt: "Mar 7, 2017",
-  competition: "Landslagstest",
-  place: "AdO arena, Bergen",
-  dateTimeFmt: "3/7/17 10:02 AM",
-  event: {
-    divesPerRound: 1,
-    round: 1,
-    startTimeFmt: "1/15/17 10:03 AM",
-    name: "Testkonkurranse 3m x, Forsøk",
-    startTime: 1484470986000,
-    finished: true,
-    pk: 13,
-    endTime: 1484470986000,
-    endTimeFmt: "1/15/17 10:03 AM",
-    type: "NORMAL",
-    results: [
-    {
-      result: "19.20",
-      name: "Caroline Sofie Kupka",
-      rank: 1,
-      pk: 54,
-      position: 2,
-      team: "BS.",
-      shortName: "Caroline Sofie Kupka" },
-
-    {
-      result: "3.60",
-      diffToFirst: "-15.60",
-      name: "Anne Sofie Moe Holm",
-      rank: 2,
-      pk: 53,
-      position: 1,
-      team: "BS.",
-      shortName: "Anne Sofie Moe Holm" }],
-
-
-    rounds: 1 },
-
-  diver: {
-    result: "19.20",
-    name: "Caroline Sofie Kupka",
-    rank: 1,
-    pk: 54,
-    position: 2,
-    team: "BS.",
-    dive: {
-      dd: "1.2",
-      actualAwards: ["5.0", "6.0", "5.0"],
-      penalty: "0.0",
-      sum: "16.00",
-      result: "19.20",
-      total: "19.20",
-      effectiveAwards: ["5.0", "6.0", "5.0"],
-      maxAward: "10",
-      position: 1,
-      dive: "101C",
-      height: "1" },
-
-    shortName: "Caroline Sofie Kupka" },
-
-  startDate: 1484470986000,
-  startDateFmt: "Jan 15, 2017",
-  latestUpdate: 1488877365912 };
-
-
-var baseDive = {
-  endDateFmt: "Jan 15, 2017",
-  endDate: 1484470986000,
-  action: "dive",
-  dateFmt: "Mar 7, 2017",
-  competition: "Landslagstest",
-  place: "AdO arena, Bergen",
-  dateTimeFmt: "3/7/17 8:54 AM",
-  event: {
-    divesPerRound: 1,
-    round: 1,
-    startTimeFmt: "1/15/17 10:03 AM",
-    name: "Testkonkurranse 3m x, Forsøk",
-    startTime: 1484470986000,
-    finished: false,
-    pk: 13,
-    endTime: 1484470986000,
-    endTimeFmt: "1/15/17 10:03 AM",
-    type: "NORMAL",
-    results: [
-    {
-      result: "3.60",
-      pending: false,
-      name: "Anne Sofie Moe Holm",
-      rank: 1,
-      pk: 53,
-      position: 1,
-      team: "BS.",
-      shortName: "Anne Sofie Moe Holm" },
-
-    {
-      result: "0.00",
-      diffToFirst: "-3.60",
-      needAwards: [{ toRank: 1, award: "1" }],
-      pending: true,
-      name: "Caroline Sofie Kupka",
-      rank: 2,
-      pk: 54,
-      position: 2,
-      team: "BS.",
-      shortName: "Caroline Sofie Kupka" }],
-
-
-    rounds: 1 },
-
-  diver: {
-    result: "0.00",
-    needAwards: [{ toRank: 1, award: "1" }],
-    name: "Caroline Sofie Kupka",
-    rank: 2,
-    pk: 54,
-    position: 2,
-    team: "BS.",
-    dive: { dd: "1.2", position: 1, dive: "101C", height: "1" },
-    shortName: "Caroline Sofie Kupka" },
-
-  startDate: 1484470986000,
-  startDateFmt: "Jan 15, 2017",
-  latestUpdate: 1488873245148 };
 });
 ___scope___.file("dives.js", function(exports, require, module, __filename, __dirname){
 
@@ -1079,12 +810,518 @@ ___scope___.file("logos.js", function(exports, require, module, __filename, __di
     "Tiirat": '/img/flags/finland.svg',
     "Va.": '/img/flags/finland.svg',
     "VanDi": '/img/flags/finland.svg',
-    "VSS": '/img/flags/sweden.svg' };
+    "VSS": '/img/flags/sweden.svg',
+    "BLR": '/img/flags/belarus.svg',
+    "UKR": '/img/flags/ukraine.svg' };
+});
+___scope___.file("infoscreen.js", function(exports, require, module, __filename, __dirname){
+
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = require("react");var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
+
+Infoscreen = function (_React$Component) {_inherits(Infoscreen, _React$Component);
+  function Infoscreen(props) {_classCallCheck(this, Infoscreen);var _this = _possibleConstructorReturn(this, (Infoscreen.__proto__ || Object.getPrototypeOf(Infoscreen)).call(this,
+    props));
+    _this.socket = io("/divecalc");
+    _this.socket.on(_this.props.channel, function (data) {
+      console.log(data);
+      var key = data.event.name;
+      var c = Object.assign({}, _this.state.competitions);
+      c[key] = data;
+      _this.setState({ competitions: c });
+    });
+    _this.state = { competitions: {} };return _this;
+  }_createClass(Infoscreen, [{ key: "componentWillUnmount", value: function componentWillUnmount()
+    {
+      this.socket.off(this.props.channel);
+    } }, { key: "render", value: function render()
+    {var _this2 = this;
+      return (
+        _react2.default.createElement("div", { className: "bigscreen" },
+          Object.keys(this.state.competitions).map(function (k) {return (
+              _react2.default.createElement(Scoreboard, _extends({ key: k }, _this2.state.competitions[k])));})));
+
+
+
+    } }]);return Infoscreen;}(_react2.default.Component);exports.default = Infoscreen;var
+
+
+Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Component2);
+  function Scoreboard(props) {_classCallCheck(this, Scoreboard);return _possibleConstructorReturn(this, (Scoreboard.__proto__ || Object.getPrototypeOf(Scoreboard)).call(this,
+    props));
+  }_createClass(Scoreboard, [{ key: "componentWillReceiveProps", value: function componentWillReceiveProps()
+    {
+      this.setState({ slice: 1 });
+    } }, { key: "render", value: function render()
+    {
+      var data = this.props;
+      var dive = data.diver.dive;
+      var showHeight = true; //["5", "7.5", "10"].indexOf(dive.height) >= 0;
+      switch (data.action) {
+        case "dive":
+          return (
+            _react2.default.createElement("div", { className: "infoScreen" },
+              _react2.default.createElement("h1", null, dive.dive),
+              showHeight && _react2.default.createElement("h1", null, dive.height, "m")));
+
+
+        default:
+          return false;}
+
+    } }]);return Scoreboard;}(_react2.default.Component);
 });
 ___scope___.file("scoreboard.scss", function(exports, require, module, __filename, __dirname){
 
-__fsbx_css("scoreboard.scss", "@import url(\"https://fonts.googleapis.com/css?family=Roboto\");\n* {\n  box-sizing: border-box; }\n\nbody {\n  font-size: 28px;\n  font-family: roboto; }\n  body.bigscreen {\n    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(\"/img/ado.jpg\") no-repeat;\n    background-size: auto, cover; }\n\ndiv.bigscreen .standings {\n  width: 94vw;\n  height: 90vh;\n  position: absolute;\n  left: 3vw;\n  top: 3vh;\n  display: flex;\n  flex-direction: column; }\n  div.bigscreen .standings:first-child:not(:last-child),\n  div.bigscreen .standings + .standings {\n    left: 1vw;\n    width: 47vw;\n    font-size: 0.96em; }\n    div.bigscreen .standings:first-child:not(:last-child) .divename,\n    div.bigscreen .standings + .standings .divename {\n      display: none; }\n    div.bigscreen .standings:first-child:not(:last-child) .diver .name,\n    div.bigscreen .standings + .standings .diver .name {\n      font-size: 1em; }\n  div.bigscreen .standings + .standings {\n    left: 51vw; }\n  div.bigscreen .standings .spacer {\n    flex: 1; }\n  div.bigscreen .standings .standingsHeader {\n    position: relative;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    margin-left: 100px;\n    min-height: 100px;\n    padding: 0;\n    padding-left: 20px;\n    color: inherit;\n    border-radius: 0 50px 50px 0;\n    display: flex;\n    flex-direction: column;\n    justify-content: center; }\n    div.bigscreen .standings .standingsHeader:before {\n      content: \"\";\n      position: absolute;\n      width: 100px;\n      height: 100px;\n      background: url(/img/bologo_yellow.svg);\n      background-size: cover;\n      left: -100px; }\n  div.bigscreen .standings .standingsFooter {\n    background: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 0 20px;\n    color: white;\n    margin-top: 4px;\n    width: 100%;\n    height: 80px;\n    border-radius: 40px;\n    line-height: 80px;\n    position: absolute;\n    bottom: 0; }\n  div.bigscreen .standings .whiteline {\n    margin: 6px 30px 0;\n    height: 44px;\n    border-radius: 22px;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    align-items: center;\n    display: flex;\n    padding-left: 20px; }\n    div.bigscreen .standings .whiteline.awardline {\n      padding-left: 0;\n      justify-content: space-around; }\n  div.bigscreen .standings .resultline {\n    margin: 6px 30px 0;\n    padding-left: 0;\n    border-radius: 22px;\n    height: 44px; }\n    div.bigscreen .standings .resultline .position {\n      border-radius: 22px;\n      width: 44px;\n      height: 44px;\n      line-height: 44px; }\n  div.bigscreen .standings .diver {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    display: flex;\n    border-radius: 50px;\n    justify-content: space-between;\n    overflow: hidden; }\n    div.bigscreen .standings .diver .name {\n      flex: 1;\n      font-size: 1.3em;\n      align-self: center;\n      text-transform: capitalize; }\n    div.bigscreen .standings .diver .round {\n      align-self: center;\n      padding: 0px 20px; }\n    div.bigscreen .standings .diver .position {\n      height: 100px;\n      width: 100px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.5em;\n      background-size: cover; }\n    div.bigscreen .standings .diver .bsdive {\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      padding-right: 30px;\n      text-align: center; }\n      div.bigscreen .standings .diver .bsdive .code {\n        font-size: 40px; }\n\n.position {\n  display: inline-block;\n  background: #fbc525;\n  height: 36px;\n  width: 36px;\n  text-align: center;\n  line-height: 36px;\n  font-size: 20px;\n  margin-right: 10px; }\n\n.standings {\n  -webkit-app-region: drag;\n  width: 70vw;\n  height: 80vh;\n  position: absolute;\n  left: 15vw;\n  bottom: 5vh; }\n  .standings .standingsHeader {\n    background-image: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 10px 20px;\n    color: white; }\n    .standings .standingsHeader .competition {\n      font-size: 1.4em;\n      margin-bottom: 10px; }\n    .standings .standingsHeader .description {\n      font-size: 1.1em; }\n  .standings .standingsFooter {\n    background: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 4px 20px;\n    color: white;\n    margin-top: 4px; }\n  .standings .resultline {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    padding: 0 20px;\n    margin-top: 4px;\n    display: flex;\n    height: 36px;\n    align-items: center; }\n    .standings .resultline .name {\n      flex: 1;\n      text-transform: capitalize; }\n\n.dive,\n.awards {\n  -webkit-app-region: drag;\n  width: 80vw;\n  margin: 0 10vw;\n  position: absolute;\n  bottom: 5vh; }\n  .dive .header,\n  .awards .header {\n    font-size: 1em;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8)); }\n    .dive .header .position,\n    .awards .header .position {\n      margin-right: 10px;\n      height: 48px;\n      width: 48px;\n      line-height: 48px;\n      font-size: 28px; }\n    .dive .header .name,\n    .awards .header .name {\n      text-transform: capitalize; }\n  .dive .data,\n  .awards .data {\n    display: flex;\n    flex-wrap: wrap; }\n    .dive .data .item,\n    .awards .data .item {\n      background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n      margin-top: 4px;\n      padding: 4px 20px 4px 10px;\n      width: 50%;\n      display: flex;\n      justify-content: space-between; }\n      .dive .data .item:nth-child(odd),\n      .awards .data .item:nth-child(odd) {\n        padding: 4px 10px 4px 20px;\n        width: calc(50% - 4px);\n        margin-right: 4px; }\n\n.awards .data .item {\n  justify-content: space-around; }\n\n.awards .data.judgeAwards {\n  margin-top: 4px;\n  background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n  padding: 4px 0;\n  justify-content: space-around; }\n\n/*# sourceMappingURL=scoreboard.scss.map */");
+__fsbx_css("scoreboard.scss", "@import url(\"https://fonts.googleapis.com/css?family=Roboto\");\n* {\n  box-sizing: border-box; }\n\nbody {\n  font-size: 28px;\n  font-family: roboto; }\n  body.bigscreen {\n    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(\"/img/ado.jpg\") no-repeat;\n    background-size: auto, cover; }\n\ndiv.bigscreen .standings {\n  width: 94vw;\n  height: 90vh;\n  position: absolute;\n  left: 3vw;\n  top: 3vh;\n  display: flex;\n  flex-direction: column; }\n  div.bigscreen .standings:first-child:not(:last-child),\n  div.bigscreen .standings + .standings {\n    left: 1vw;\n    width: 47vw;\n    font-size: 0.96em; }\n    div.bigscreen .standings:first-child:not(:last-child) .divename,\n    div.bigscreen .standings + .standings .divename {\n      display: none; }\n    div.bigscreen .standings:first-child:not(:last-child) .diver .name,\n    div.bigscreen .standings + .standings .diver .name {\n      font-size: 1em; }\n  div.bigscreen .standings + .standings {\n    left: 51vw; }\n  div.bigscreen .standings .spacer {\n    flex: 1; }\n  div.bigscreen .standings .standingsHeader {\n    position: relative;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    margin-left: 100px;\n    min-height: 100px;\n    padding: 0;\n    padding-left: 20px;\n    color: inherit;\n    border-radius: 0 50px 50px 0;\n    display: flex;\n    flex-direction: column;\n    justify-content: center; }\n    div.bigscreen .standings .standingsHeader:before {\n      content: \"\";\n      position: absolute;\n      width: 100px;\n      height: 100px;\n      background: url(/img/BStKlogo.svg);\n      background-size: cover;\n      left: -100px; }\n  div.bigscreen .standings .standingsFooter {\n    background: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 0 20px;\n    color: white;\n    margin-top: 4px;\n    width: 100%;\n    height: 80px;\n    border-radius: 40px;\n    line-height: 80px;\n    position: absolute;\n    bottom: 0; }\n  div.bigscreen .standings .whiteline {\n    margin: 6px 30px 0;\n    height: 44px;\n    border-radius: 22px;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    align-items: center;\n    display: flex;\n    padding-left: 20px; }\n    div.bigscreen .standings .whiteline.awardline {\n      padding-left: 0;\n      justify-content: space-around; }\n  div.bigscreen .standings .resultline {\n    margin: 6px 30px 0;\n    padding-left: 0;\n    border-radius: 22px;\n    height: 44px; }\n    div.bigscreen .standings .resultline .position {\n      border-radius: 22px;\n      width: 44px;\n      height: 44px;\n      line-height: 44px; }\n  div.bigscreen .standings .diver {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    display: flex;\n    border-radius: 50px;\n    justify-content: space-between;\n    overflow: hidden; }\n    div.bigscreen .standings .diver .name {\n      flex: 1;\n      font-size: 1.3em;\n      align-self: center;\n      text-transform: capitalize; }\n    div.bigscreen .standings .diver .round {\n      align-self: center;\n      padding: 0px 20px; }\n    div.bigscreen .standings .diver .position {\n      height: 100px;\n      width: 100px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.5em;\n      background-size: cover; }\n    div.bigscreen .standings .diver .bsdive {\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      padding-right: 30px;\n      text-align: center; }\n      div.bigscreen .standings .diver .bsdive .code {\n        font-size: 40px; }\n\n.position {\n  display: inline-block;\n  background: #fbc525;\n  height: 36px;\n  width: 36px;\n  text-align: center;\n  line-height: 36px;\n  font-size: 20px;\n  margin-right: 10px; }\n\n.standings {\n  -webkit-app-region: drag;\n  width: 70vw;\n  height: 80vh;\n  position: absolute;\n  left: 15vw;\n  bottom: 5vh; }\n  .standings .standingsHeader {\n    background-image: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 10px 20px;\n    color: white; }\n    .standings .standingsHeader .competition {\n      font-size: 1.4em;\n      margin-bottom: 10px; }\n    .standings .standingsHeader .description {\n      font-size: 1.1em; }\n  .standings .standingsFooter {\n    background: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 4px 20px;\n    color: white;\n    margin-top: 4px; }\n  .standings .resultline {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    padding: 0 20px;\n    margin-top: 4px;\n    display: flex;\n    height: 36px;\n    align-items: center; }\n    .standings .resultline .name {\n      flex: 1;\n      text-transform: capitalize; }\n\n.dive,\n.awards {\n  -webkit-app-region: drag;\n  width: 80vw;\n  margin: 0 10vw;\n  position: absolute;\n  bottom: 5vh; }\n  .dive .header,\n  .awards .header {\n    font-size: 1em;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8)); }\n    .dive .header .position,\n    .awards .header .position {\n      margin-right: 10px;\n      height: 48px;\n      width: 48px;\n      line-height: 48px;\n      font-size: 28px; }\n    .dive .header .name,\n    .awards .header .name {\n      text-transform: capitalize; }\n  .dive .data,\n  .awards .data {\n    display: flex;\n    flex-wrap: wrap; }\n    .dive .data .item,\n    .awards .data .item {\n      background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n      margin-top: 4px;\n      padding: 4px 20px 4px 10px;\n      width: 50%;\n      display: flex;\n      justify-content: space-between; }\n      .dive .data .item:nth-child(odd),\n      .awards .data .item:nth-child(odd) {\n        padding: 4px 10px 4px 20px;\n        width: calc(50% - 4px);\n        margin-right: 4px; }\n\n.awards .data .item {\n  justify-content: space-around; }\n\n.awards .data.judgeAwards {\n  margin-top: 4px;\n  background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n  padding: 4px 0;\n  justify-content: space-around; }\n\n/*# sourceMappingURL=scoreboard.scss.map */");
 });
+});
+FuseBox.pkg("fusebox-hot-reload", {}, function(___scope___){
+___scope___.file("index.js", function(exports, require, module, __filename, __dirname){
+
+/**
+ * @module listens to `source-changed` socket events and actions hot reload
+ */
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Client = require('fusebox-websocket').SocketClient;
+exports.connect = function (port, uri) {
+    if (FuseBox.isServer) {
+        return;
+    }
+    port = port || window.location.port;
+    var client = new Client({
+        port: port,
+        uri: uri,
+    });
+    client.connect();
+    console.log('connecting...');
+    client.on('source-changed', function (data) {
+        console.log("Updating \"" + data.path + "\" ...");
+        /**
+         * If a plugin handles this request then we don't have to do anything
+         **/
+        for (var index = 0; index < FuseBox.plugins.length; index++) {
+            var plugin = FuseBox.plugins[index];
+            if (plugin.hmrUpdate && plugin.hmrUpdate(data)) {
+                return;
+            }
+        }
+        if (data.type === 'js') {
+            FuseBox.flush();
+            FuseBox.dynamic(data.path, data.content);
+            if (FuseBox.mainFile) {
+                try {
+                    FuseBox.import(FuseBox.mainFile);
+                }
+                catch (e) {
+                    if (typeof e === 'string') {
+                        if (/not found/.test(e)) {
+                            return window.location.reload();
+                        }
+                    }
+                    console.error(e);
+                }
+            }
+        }
+        if (data.type === 'css' && __fsbx_css) {
+            __fsbx_css(data.path, data.content);
+        }
+    });
+    client.on('error', function (error) {
+        console.log(error);
+    });
+};
+
+});
+return ___scope___.entry = "index.js";
+});
+FuseBox.pkg("fusebox-websocket", {}, function(___scope___){
+___scope___.file("index.js", function(exports, require, module, __filename, __dirname){
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var events = require('events');
+var SocketClient = (function () {
+    function SocketClient(opts) {
+        opts = opts || {};
+        var port = opts.port || window.location.port;
+        var protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
+        var domain = location.hostname || 'localhost';
+        this.url = opts.host || "" + protocol + domain + ":" + port;
+        if (opts.uri) {
+            this.url = opts.uri;
+        }
+        this.authSent = false;
+        this.emitter = new events.EventEmitter();
+    }
+    SocketClient.prototype.reconnect = function (fn) {
+        var _this = this;
+        setTimeout(function () {
+            _this.emitter.emit('reconnect', { message: 'Trying to reconnect' });
+            _this.connect(fn);
+        }, 5000);
+    };
+    SocketClient.prototype.on = function (event, fn) {
+        this.emitter.on(event, fn);
+    };
+    SocketClient.prototype.connect = function (fn) {
+        var _this = this;
+        console.log('connect', this.url);
+        setTimeout(function () {
+            _this.client = new WebSocket(_this.url);
+            _this.bindEvents(fn);
+        }, 0);
+    };
+    SocketClient.prototype.close = function () {
+        this.client.close();
+    };
+    SocketClient.prototype.send = function (eventName, data) {
+        if (this.client.readyState === 1) {
+            this.client.send(JSON.stringify({ event: eventName, data: data || {} }));
+        }
+    };
+    SocketClient.prototype.error = function (data) {
+        this.emitter.emit('error', data);
+    };
+    /** Wires up the socket client messages to be emitted on our event emitter */
+    SocketClient.prototype.bindEvents = function (fn) {
+        var _this = this;
+        this.client.onopen = function (event) {
+            if (fn) {
+                fn(_this);
+            }
+        };
+        this.client.onerror = function (event) {
+            _this.error({ reason: event.reason, message: 'Socket error' });
+        };
+        this.client.onclose = function (event) {
+            _this.emitter.emit('close', { message: 'Socket closed' });
+            if (event.code !== 1011) {
+                _this.reconnect(fn);
+            }
+        };
+        this.client.onmessage = function (event) {
+            var data = event.data;
+            if (data) {
+                var item = JSON.parse(data);
+                _this.emitter.emit(item.type, item.data);
+                _this.emitter.emit('*', item);
+            }
+        };
+    };
+    return SocketClient;
+}());
+exports.SocketClient = SocketClient;
+
+});
+return ___scope___.entry = "index.js";
+});
+FuseBox.pkg("events", {}, function(___scope___){
+___scope___.file("index.js", function(exports, require, module, __filename, __dirname){
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+if (FuseBox.isServer) {
+    module.exports = global.require("events");
+} else {
+    function EventEmitter() {
+        this._events = this._events || {};
+        this._maxListeners = this._maxListeners || undefined;
+    }
+    module.exports = EventEmitter;
+
+    // Backwards-compat with node 0.10.x
+    EventEmitter.EventEmitter = EventEmitter;
+
+    EventEmitter.prototype._events = undefined;
+    EventEmitter.prototype._maxListeners = undefined;
+
+    // By default EventEmitters will print a warning if more than 10 listeners are
+    // added to it. This is a useful default which helps finding memory leaks.
+    EventEmitter.defaultMaxListeners = 10;
+
+    // Obviously not all Emitters should be limited to 10. This function allows
+    // that to be increased. Set to zero for unlimited.
+    EventEmitter.prototype.setMaxListeners = function(n) {
+        if (!isNumber(n) || n < 0 || isNaN(n))
+            throw TypeError("n must be a positive number");
+        this._maxListeners = n;
+        return this;
+    };
+
+    EventEmitter.prototype.emit = function(type) {
+        var er, handler, len, args, i, listeners;
+
+        if (!this._events)
+            this._events = {};
+
+        // If there is no 'error' event listener then throw.
+        if (type === "error") {
+            if (!this._events.error ||
+                (isObject(this._events.error) && !this._events.error.length)) {
+                er = arguments[1];
+                if (er instanceof Error) {
+                    throw er; // Unhandled 'error' event
+                }
+                throw TypeError("Uncaught, unspecified \"error\" event.");
+            }
+        }
+
+        handler = this._events[type];
+
+        if (isUndefined(handler))
+            return false;
+
+        if (isFunction(handler)) {
+            switch (arguments.length) {
+                // fast cases
+                case 1:
+                    handler.call(this);
+                    break;
+                case 2:
+                    handler.call(this, arguments[1]);
+                    break;
+                case 3:
+                    handler.call(this, arguments[1], arguments[2]);
+                    break;
+                    // slower
+                default:
+                    args = Array.prototype.slice.call(arguments, 1);
+                    handler.apply(this, args);
+            }
+        } else if (isObject(handler)) {
+            args = Array.prototype.slice.call(arguments, 1);
+            listeners = handler.slice();
+            len = listeners.length;
+            for (i = 0; i < len; i++)
+                listeners[i].apply(this, args);
+        }
+
+        return true;
+    };
+
+    EventEmitter.prototype.addListener = function(type, listener) {
+        var m;
+
+        if (!isFunction(listener))
+            throw TypeError("listener must be a function");
+
+        if (!this._events)
+            this._events = {};
+
+        // To avoid recursion in the case that type === "newListener"! Before
+        // adding it to the listeners, first emit "newListener".
+        if (this._events.newListener)
+            this.emit("newListener", type,
+                isFunction(listener.listener) ?
+                listener.listener : listener);
+
+        if (!this._events[type])
+        // Optimize the case of one listener. Don't need the extra array object.
+            this._events[type] = listener;
+        else if (isObject(this._events[type]))
+        // If we've already got an array, just append.
+            this._events[type].push(listener);
+        else
+        // Adding the second element, need to change to array.
+            this._events[type] = [this._events[type], listener];
+
+        // Check for listener leak
+        if (isObject(this._events[type]) && !this._events[type].warned) {
+            if (!isUndefined(this._maxListeners)) {
+                m = this._maxListeners;
+            } else {
+                m = EventEmitter.defaultMaxListeners;
+            }
+
+            if (m && m > 0 && this._events[type].length > m) {
+                this._events[type].warned = true;
+                console.error("(node) warning: possible EventEmitter memory " +
+                    "leak detected. %d listeners added. " +
+                    "Use emitter.setMaxListeners() to increase limit.",
+                    this._events[type].length);
+                if (typeof console.trace === "function") {
+                    // not supported in IE 10
+                    console.trace();
+                }
+            }
+        }
+
+        return this;
+    };
+
+    EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+    EventEmitter.prototype.once = function(type, listener) {
+        if (!isFunction(listener))
+            throw TypeError("listener must be a function");
+
+        var fired = false;
+
+        function g() {
+            this.removeListener(type, g);
+
+            if (!fired) {
+                fired = true;
+                listener.apply(this, arguments);
+            }
+        }
+
+        g.listener = listener;
+        this.on(type, g);
+
+        return this;
+    };
+
+    // emits a 'removeListener' event iff the listener was removed
+    EventEmitter.prototype.removeListener = function(type, listener) {
+        var list, position, length, i;
+
+        if (!isFunction(listener))
+            throw TypeError("listener must be a function");
+
+        if (!this._events || !this._events[type])
+            return this;
+
+        list = this._events[type];
+        length = list.length;
+        position = -1;
+
+        if (list === listener ||
+            (isFunction(list.listener) && list.listener === listener)) {
+            delete this._events[type];
+            if (this._events.removeListener)
+                this.emit("removeListener", type, listener);
+
+        } else if (isObject(list)) {
+            for (i = length; i-- > 0;) {
+                if (list[i] === listener ||
+                    (list[i].listener && list[i].listener === listener)) {
+                    position = i;
+                    break;
+                }
+            }
+
+            if (position < 0)
+                return this;
+
+            if (list.length === 1) {
+                list.length = 0;
+                delete this._events[type];
+            } else {
+                list.splice(position, 1);
+            }
+
+            if (this._events.removeListener)
+                this.emit("removeListener", type, listener);
+        }
+
+        return this;
+    };
+
+    EventEmitter.prototype.removeAllListeners = function(type) {
+        var key, listeners;
+
+        if (!this._events)
+            return this;
+
+        // not listening for removeListener, no need to emit
+        if (!this._events.removeListener) {
+            if (arguments.length === 0)
+                this._events = {};
+            else if (this._events[type])
+                delete this._events[type];
+            return this;
+        }
+
+        // emit removeListener for all listeners on all events
+        if (arguments.length === 0) {
+            for (key in this._events) {
+                if (key === "removeListener") continue;
+                this.removeAllListeners(key);
+            }
+            this.removeAllListeners("removeListener");
+            this._events = {};
+            return this;
+        }
+
+        listeners = this._events[type];
+
+        if (isFunction(listeners)) {
+            this.removeListener(type, listeners);
+        } else if (listeners) {
+            // LIFO order
+            while (listeners.length)
+                this.removeListener(type, listeners[listeners.length - 1]);
+        }
+        delete this._events[type];
+
+        return this;
+    };
+
+    EventEmitter.prototype.listeners = function(type) {
+        var ret;
+        if (!this._events || !this._events[type])
+            ret = [];
+        else if (isFunction(this._events[type]))
+            ret = [this._events[type]];
+        else
+            ret = this._events[type].slice();
+        return ret;
+    };
+
+    EventEmitter.prototype.listenerCount = function(type) {
+        if (this._events) {
+            var evlistener = this._events[type];
+
+            if (isFunction(evlistener))
+                return 1;
+            else if (evlistener)
+                return evlistener.length;
+        }
+        return 0;
+    };
+
+    EventEmitter.listenerCount = function(emitter, type) {
+        return emitter.listenerCount(type);
+    };
+
+    function isFunction(arg) {
+        return typeof arg === "function";
+    }
+
+    function isNumber(arg) {
+        return typeof arg === "number";
+    }
+
+    function isObject(arg) {
+        return typeof arg === "object" && arg !== null;
+    }
+
+    function isUndefined(arg) {
+        return arg === void 0;
+    }
+}
+
+});
+return ___scope___.entry = "index.js";
 });
 FuseBox.pkg("react", {}, function(___scope___){
 ___scope___.file("react.js", function(exports, require, module, __filename, __dirname){
@@ -22068,6 +22305,7 @@ module.exports = ReactDOMInvalidARIAHook;
 });
 return ___scope___.entry = "index.js";
 });
+FuseBox.import("fusebox-hot-reload").connect(4444, "")
 
 FuseBox.import("default/index.js");
 FuseBox.main("default/index.js");
