@@ -7,7 +7,7 @@ export default class Scoreboard extends React.Component {
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
       console.log(data);
-      this.setState({ data: data, slice: 1 });
+      this.setState({ data: data[this.props.competition], slice: 1 });
     });
   }
   componentWillUnmount() {
@@ -20,6 +20,9 @@ export default class Scoreboard extends React.Component {
     }
     //this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
     const data = this.state.data;
+    if(!data){
+      return false;
+    }
     const diver = data.diver;
     const event = data.event;
     switch (data.action) {
@@ -115,10 +118,10 @@ export default class Scoreboard extends React.Component {
                 <div className="judgeAward" key={i}>{a}</div>
               ))}
             </div>
-              {(diver.dive.penalty != "0.0" || diver.dive.maxAward != "10") ?
+              {(!/0[,.]0/.test(diver.dive.penalty) || diver.dive.maxAward != "10") ?
                 <div className="data judgeAwards">
                   <div className="judgeAward">
-                    {diver.dive.penalty != "0.0" && <div>Penalty: {diver.dive.penalty}</div>}
+                    {!/0[,.]0/.test(diver.dive.penalty) && <div>Penalty: {diver.dive.penalty}</div>}
                   </div>
                   <div className="judgeAward">
                     {diver.dive.maxAward != "10" && <div>Max Award: {diver.dive.maxAward}</div>}
