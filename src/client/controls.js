@@ -37,8 +37,9 @@ export default class Controls extends React.Component {
           <Control
             key={k}
             onDelete={() => {
-              this.socket.emit(this.props.channel, {
+              this.socket.emit("command", {
                 type: "command",
+                channel: this.props.channel,
                 command: "clear",
                 argument: k
               });

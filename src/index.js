@@ -41,14 +41,14 @@ io.on("connection", (ctx, data) => {
   });
 });
 
-io.on("screen", (ctx, data) => {
+io.on("command", (ctx, data) => {
   switch (data.command) {
     case "clearAll":
-      state.screen = {};
+      state[data.channel || 'screen'] = {};
     case "clear":
-      delete state.screen[data.argument];
+      delete state[data.channel || 'screen'][data.argument];
     default:
-      io.broadcast("screen", state.screen);
+      io.broadcast(data.channel || 'screen', state[data.channel || 'screen']);
   }
 });
 

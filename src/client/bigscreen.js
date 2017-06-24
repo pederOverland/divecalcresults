@@ -7,7 +7,7 @@ export default class Bigscreen extends React.Component {
     super(props);
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
-      this.setState({competitions: data});
+      this.setState({ competitions: data });
     });
     this.state = { competitions: {} };
   }
@@ -45,7 +45,7 @@ class Scoreboard extends React.Component {
     const logo = logos[diver.nationality || diver.team];
     switch (data.action) {
       case "judges":
-        const panels = event.judges.panels.map(p=>p.judges);
+        const panels = event.judges.panels.map(p => p.judges);
         const judges = [].concat.apply([], panels);
         return (
           <div className="standings">
@@ -57,18 +57,56 @@ class Scoreboard extends React.Component {
                 Judges
               </div>
             </div>
-            {judges.map((r, i) =>
-              <div className="resultline" key={i}>
+            {event.judges.referee &&
+              <div className="resultline">
                 <div
                   className="position"
-                  style={{ backgroundImage: "url(" + logos[r.team] + ")" }}
+                  style={{ backgroundImage: "url(" + logos[event.judges.referee.team] + ")" }}
                 />
                 <div className="name">
-                  {r.name.toLowerCase()}
-                  {r.nationality && " (" + r.nationality + ")"}
+                  {event.judges.referee.name.toLowerCase()}
+                  {event.judges.referee.nationality && " (" + event.judges.referee.nationality + ")"}
                 </div>
-              </div>
-            )}
+                <div className="role">Referee</div>
+              </div>}
+            {event.judges.assistantReferee &&
+              <div className="resultline">
+                <div
+                  className="position"
+                  style={{ backgroundImage: "url(" + logos[event.judges.assistantReferee.team] + ")" }}
+                />
+                <div className="name">
+                  {event.judges.assistantReferee.name.toLowerCase()}
+                  {event.judges.assistantReferee.nationality && " (" + event.judges.assistantReferee.nationality + ")"}
+                </div>
+                <div className="role">Ass. Referee</div>
+              </div>}
+            {event.judges.panels.map(p => {
+              const prefix = p.panel;
+              let count = 0;
+              let curr = null;
+              return p.judges.map(j => {
+                const postfix = j.type ? (j.type == "SYNCRO" ? "S" : "E") : "";
+                if (curr != postfix) {
+                  curr = postfix;
+                  count = 0;
+                }
+                count += 1;
+                return (
+                  <div className="resultline" key={j.position}>
+                    <div
+                      className="position"
+                      style={{ backgroundImage: "url(" + logos[j.team] + ")" }}
+                    />
+                    <div className="name">
+                      {j.name.toLowerCase()}
+                      {j.nationality && " (" + j.nationality + ")"}
+                    </div>
+                    <div className="role">{postfix}&nbsp;{count}</div>
+                  </div>
+                );
+              });
+            })}
             <div className="standingsFooter">
               {data.competition}
             </div>
@@ -199,7 +237,8 @@ class Scoreboard extends React.Component {
                 </div>
               : false}
             {data.action == "awards" &&
-              (!/0[,.]0/.test(diver.dive.penalty) || diver.dive.maxAward != "10")
+              (!/0[,.]0/.test(diver.dive.penalty) ||
+                diver.dive.maxAward != "10")
               ? <div className="whiteline awardline">
                   {!/0[,.]0/.test(diver.dive.penalty) &&
                     <div>Penalty: {diver.dive.penalty}</div>}
