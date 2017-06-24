@@ -49,6 +49,7 @@ var _reactDom = require("react-dom");var _reactDom2 = _interopRequireDefault(_re
 var _scoreboard = require("./scoreboard.js");var _scoreboard2 = _interopRequireDefault(_scoreboard);
 var _bigscreen = require("./bigscreen.js");var _bigscreen2 = _interopRequireDefault(_bigscreen);
 var _infoscreen = require("./infoscreen.js");var _infoscreen2 = _interopRequireDefault(_infoscreen);
+var _controls = require("./controls.js");var _controls2 = _interopRequireDefault(_controls);
 require("./scoreboard.scss");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 function getParameterByName(name, url) {
@@ -64,13 +65,16 @@ function getParameterByName(name, url) {
 }
 
 var channel = getParameterByName("channel");
+var competition = getParameterByName("competition");
 
 if (document.body.classList.contains("bigscreen")) {
   _reactDom2.default.render(_react2.default.createElement(_bigscreen2.default, { channel: channel || 'screen' }), document.getElementById("scoreboard"));
 } else if (document.body.classList.contains("infoscreen")) {
-  _reactDom2.default.render(_react2.default.createElement(_infoscreen2.default, { channel: channel || 'screen' }), document.getElementById("scoreboard"));
+  _reactDom2.default.render(_react2.default.createElement(_infoscreen2.default, { competition: competition, channel: channel || 'screen' }), document.getElementById("scoreboard"));
+} else if (document.body.classList.contains("controls")) {
+  _reactDom2.default.render(_react2.default.createElement(_controls2.default, { channel: channel || 'screen' }), document.getElementById("scoreboard"));
 } else {
-  _reactDom2.default.render(_react2.default.createElement(_scoreboard2.default, { channel: channel || 'stream' }), document.getElementById("scoreboard"));
+  _reactDom2.default.render(_react2.default.createElement(_scoreboard2.default, { competition: competition, channel: channel || 'stream' }), document.getElementById("scoreboard"));
 }
 });
 ___scope___.file("scoreboard.js", function(exports, require, module, __filename, __dirname){
@@ -84,7 +88,10 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
     _this.socket = io("/divecalc");
     _this.socket.on(_this.props.channel, function (data) {
       console.log(data);
-      _this.setState({ data: data, slice: 1 });
+      _this.setState({
+        data: data[_this.props.competition] || Object.values(data)[0],
+        slice: 1 });
+
     });return _this;
   }_createClass(Scoreboard, [{ key: "componentWillUnmount", value: function componentWillUnmount()
     {
@@ -97,9 +104,77 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
       }
       //this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
       var data = this.state.data;
+      if (!data) {
+        return false;
+      }
       var diver = data.diver;
       var event = data.event;
       switch (data.action) {
+        case "judges":
+          var panels = event.judges.panels.map(function (p) {return p.judges;});
+          var judges = [].concat.apply([], panels);
+          return (
+            _react2.default.createElement("div", { className: "standings" },
+              _react2.default.createElement("div", { className: "standingsHeader" },
+                _react2.default.createElement("div", { className: "competition" },
+                  event.name),
+
+                _react2.default.createElement("div", { className: "description" }, "Judges")),
+
+
+
+              event.judges.referee &&
+              _react2.default.createElement("div", { className: "resultline" },
+                _react2.default.createElement("div", { className: "position" }),
+                _react2.default.createElement("div", { className: "name" },
+                  event.judges.referee.name.toLowerCase(),
+                  event.judges.referee.nationality &&
+                  " (" + event.judges.referee.nationality + ")"),
+
+                _react2.default.createElement("div", { className: "role" }, "Referee")),
+
+              event.judges.assistantReferee &&
+              _react2.default.createElement("div", { className: "resultline" },
+                _react2.default.createElement("div", {
+                  className: "position" }),
+
+                _react2.default.createElement("div", { className: "name" },
+                  event.judges.assistantReferee.name.toLowerCase(),
+                  event.judges.assistantReferee.nationality &&
+                  " (" + event.judges.assistantReferee.nationality + ")"),
+
+                _react2.default.createElement("div", { className: "role" }, "Ass. Referee")),
+
+              event.judges.panels.map(function (p) {
+                var prefix = p.panel;
+                var count = 0;
+                var curr = null;
+                return p.judges.map(function (j) {
+                  var postfix = j.type ? j.type == "SYNCRO" ? "S" : "E" : "";
+                  if (curr != postfix) {
+                    curr = postfix;
+                    count = 0;
+                  }
+                  count += 1;
+                  return (
+                    _react2.default.createElement("div", { className: "resultline", key: j.position },
+                      _react2.default.createElement("div", {
+                        className: "position" }),
+
+                      _react2.default.createElement("div", { className: "name" },
+                        j.name.toLowerCase(),
+                        j.nationality && " (" + j.nationality + ")"),
+
+                      _react2.default.createElement("div", { className: "role" }, postfix, "\xA0", count)));
+
+
+                });
+              }),
+              _react2.default.createElement("div", { className: "standingsFooter" },
+                data.competition)));
+
+
+
         case "startlist":
         case "results":
           var startlist = data.action == "startlist";
@@ -125,9 +200,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
                   event.name),
 
                 _react2.default.createElement("div", { className: "description" },
-                  startlist ?
-                  "Start list" :
-                  "Results round " + event.round)),
+                  startlist ? "Start list" : "Results round " + event.round)),
 
 
               results.map(function (r, i) {return (
@@ -135,7 +208,10 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
                     _react2.default.createElement("div", { className: "position" },
                       startlist ? r.position : r.rank),
 
-                    _react2.default.createElement("div", { className: "name" }, r.name.toLowerCase(), r.nationality && " (" + r.nationality + ")"),
+                    _react2.default.createElement("div", { className: "name" },
+                      r.name.toLowerCase(),
+                      r.nationality && " (" + r.nationality + ")"),
+
                     !startlist && _react2.default.createElement("div", { className: "points" }, r.result)));}),
 
 
@@ -149,7 +225,10 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
             _react2.default.createElement("div", { className: "dive" },
               _react2.default.createElement("div", { className: "header" },
                 _react2.default.createElement("div", { className: "position" }, diver.position),
-                _react2.default.createElement("span", { className: "name" }, ' ' + diver.name.toLowerCase(), diver.nationality && " (" + diver.nationality + ")")),
+                _react2.default.createElement("span", { className: "name" },
+                  " " + diver.name.toLowerCase(),
+                  diver.nationality && " (" + diver.nationality + ")")),
+
 
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
@@ -170,12 +249,14 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
 
         case "awards":
-
           return (
             _react2.default.createElement("div", { className: "awards" },
               _react2.default.createElement("div", { className: "header" },
                 _react2.default.createElement("span", { className: "position" }, diver.position),
-                _react2.default.createElement("span", { className: "name" }, ' ' + diver.name.toLowerCase(), diver.nationality && " (" + diver.nationality + ")")),
+                _react2.default.createElement("span", { className: "name" },
+                  " " + diver.name.toLowerCase(),
+                  diver.nationality && " (" + diver.nationality + ")")),
+
 
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
@@ -192,24 +273,24 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
                     _react2.default.createElement("div", { className: "judgeAward", key: i }, a));})),
 
 
-              diver.dive.penalty != "0.0" || diver.dive.maxAward != "10" ?
+              !/0[,.]0/.test(diver.dive.penalty) || diver.dive.maxAward != "10" ?
               _react2.default.createElement("div", { className: "data judgeAwards" },
                 _react2.default.createElement("div", { className: "judgeAward" },
-                  diver.dive.penalty != "0.0" && _react2.default.createElement("div", null, "Penalty: ", diver.dive.penalty)),
+                  !/0[,.]0/.test(diver.dive.penalty) &&
+                  _react2.default.createElement("div", null, "Penalty: ", diver.dive.penalty)),
 
                 _react2.default.createElement("div", { className: "judgeAward" },
-                  diver.dive.maxAward != "10" && _react2.default.createElement("div", null, "Max Award: ", diver.dive.maxAward))) :
+                  diver.dive.maxAward != "10" &&
+                  _react2.default.createElement("div", null, "Max Award: ", diver.dive.maxAward))) :
 
 
               false));
-
 
 
         default:
           return _react2.default.createElement("div", null);}
 
     } }]);return Scoreboard;}(_react2.default.Component);exports.default = Scoreboard;
-
 
 
 var startList = {
@@ -461,11 +542,7 @@ Bigscreen = function (_React$Component) {_inherits(Bigscreen, _React$Component);
     props));
     _this.socket = io("/divecalc");
     _this.socket.on(_this.props.channel, function (data) {
-      console.log(data);
-      var key = data.event.name;
-      var c = Object.assign({}, _this.state.competitions);
-      c[key] = data;
-      _this.setState({ competitions: c });
+      _this.setState({ competitions: data });
     });
     _this.state = { competitions: {} };return _this;
   }_createClass(Bigscreen, [{ key: "componentWillUnmount", value: function componentWillUnmount()
@@ -502,6 +579,74 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
       var event = data.event;
       var logo = _logos2.default[diver.nationality || diver.team];
       switch (data.action) {
+        case "judges":
+          var panels = event.judges.panels.map(function (p) {return p.judges;});
+          var judges = [].concat.apply([], panels);
+          return (
+            _react2.default.createElement("div", { className: "standings" },
+              _react2.default.createElement("div", { className: "standingsHeader" },
+                _react2.default.createElement("div", { className: "competition" },
+                  event.name),
+
+                _react2.default.createElement("div", { className: "description" }, "Judges")),
+
+
+
+              event.judges.referee &&
+              _react2.default.createElement("div", { className: "resultline" },
+                _react2.default.createElement("div", {
+                  className: "position",
+                  style: { backgroundImage: "url(" + _logos2.default[event.judges.referee.team] + ")" } }),
+
+                _react2.default.createElement("div", { className: "name" },
+                  event.judges.referee.name.toLowerCase(),
+                  event.judges.referee.nationality && " (" + event.judges.referee.nationality + ")"),
+
+                _react2.default.createElement("div", { className: "role" }, "Referee")),
+
+              event.judges.assistantReferee &&
+              _react2.default.createElement("div", { className: "resultline" },
+                _react2.default.createElement("div", {
+                  className: "position",
+                  style: { backgroundImage: "url(" + _logos2.default[event.judges.assistantReferee.team] + ")" } }),
+
+                _react2.default.createElement("div", { className: "name" },
+                  event.judges.assistantReferee.name.toLowerCase(),
+                  event.judges.assistantReferee.nationality && " (" + event.judges.assistantReferee.nationality + ")"),
+
+                _react2.default.createElement("div", { className: "role" }, "Ass. Referee")),
+
+              event.judges.panels.map(function (p) {
+                var prefix = p.panel;
+                var count = 0;
+                var curr = null;
+                return p.judges.map(function (j) {
+                  var postfix = j.type ? j.type == "SYNCRO" ? "S" : "E" : "";
+                  if (curr != postfix) {
+                    curr = postfix;
+                    count = 0;
+                  }
+                  count += 1;
+                  return (
+                    _react2.default.createElement("div", { className: "resultline", key: j.position },
+                      _react2.default.createElement("div", {
+                        className: "position",
+                        style: { backgroundImage: "url(" + _logos2.default[j.team] + ")" } }),
+
+                      _react2.default.createElement("div", { className: "name" },
+                        j.name.toLowerCase(),
+                        j.nationality && " (" + j.nationality + ")"),
+
+                      _react2.default.createElement("div", { className: "role" }, postfix, "\xA0", count)));
+
+
+                });
+              }),
+              _react2.default.createElement("div", { className: "standingsFooter" },
+                data.competition)));
+
+
+
         case "startlist":
         case "results":
           var startlist = data.action == "startlist";
@@ -537,7 +682,8 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                       style: { backgroundImage: "url(" + _logos2.default[r.team] + ")" } }),
 
                     _react2.default.createElement("div", { className: "name" },
-                      startlist ? r.position : r.rank, ". ", r.name.toLowerCase(), r.nationality && " (" + r.nationality + ")"),
+                      startlist ? r.position : r.rank, ".\xA0", r.name.toLowerCase(),
+                      r.nationality && " (" + r.nationality + ")"),
 
                     !startlist && _react2.default.createElement("div", { className: "points" }, r.result)));}),
 
@@ -571,7 +717,10 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                       className: "position",
                       style: { backgroundImage: "url(" + _logos2.default[r.team] + ")" } }),
 
-                    _react2.default.createElement("div", { className: "name" }, r.rank, ". ", r.name.toLowerCase(), r.nationality && " (" + r.nationality + ")"),
+                    _react2.default.createElement("div", { className: "name" },
+                      r.rank, ".\xA0", r.name.toLowerCase(),
+                      r.nationality && " (" + r.nationality + ")"),
+
                     _react2.default.createElement("div", { className: "points" }, r.result)));}),
 
 
@@ -582,12 +731,19 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                   style: { backgroundImage: "url(" + logo + ")" } }),
 
                 showHeight ?
-                _react2.default.createElement("div", { className: "name" }, diver.position + ". " + diver.name.toLowerCase(), diver.nationality && " (" + diver.nationality + ")", " (", event.round + "/" + event.rounds, ")") :
-                _react2.default.createElement("div", { className: "name" }, diver.position + ". " + diver.name.toLowerCase(), diver.nationality && " (" + diver.nationality + ")"),
+                _react2.default.createElement("div", { className: "name" },
+                  diver.position + ". " + diver.name.toLowerCase(),
+                  diver.nationality &&
+                  " (" + diver.nationality + ")", " (", event.round + "/" + event.rounds, ")") :
+
+                _react2.default.createElement("div", { className: "name" },
+                  diver.position + ". " + diver.name.toLowerCase(),
+                  diver.nationality && " (" + diver.nationality + ")"),
 
                 showHeight ?
                 _react2.default.createElement("div", { className: "round" }, diver.dive.height, " m") :
-                _react2.default.createElement("div", { className: "round" }, event.round + "/" + event.rounds),
+                _react2.default.createElement("div", { className: "round" },
+                  event.round + "/" + event.rounds),
 
                 _react2.default.createElement("div", { className: "bsdive" },
                   _react2.default.createElement("div", { className: "code" }, diver.dive.dive),
@@ -615,10 +771,14 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                 _react2.default.createElement("div", null, "Rank: ", diver.rank)) :
 
               false,
-              data.action == "awards" && (diver.dive.penalty != "0.0" || diver.dive.maxAward != "10") ?
+              data.action == "awards" && (
+              !/0[,.]0/.test(diver.dive.penalty) ||
+              diver.dive.maxAward != "10") ?
               _react2.default.createElement("div", { className: "whiteline awardline" },
-                diver.dive.penalty != "0.0" && _react2.default.createElement("div", null, "Penalty: ", diver.dive.penalty),
-                diver.dive.maxAward != "10" && _react2.default.createElement("div", null, "Max award: ", diver.dive.maxAward)) :
+                !/0[,.]0/.test(diver.dive.penalty) &&
+                _react2.default.createElement("div", null, "Penalty: ", diver.dive.penalty),
+                diver.dive.maxAward != "10" &&
+                _react2.default.createElement("div", null, "Max award: ", diver.dive.maxAward)) :
 
               false));}
 
@@ -766,57 +926,83 @@ ___scope___.file("dives.js", function(exports, require, module, __filename, __di
 });
 ___scope___.file("logos.js", function(exports, require, module, __filename, __dirname){
 
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = {
-    "ASV": '/img/flags/austria.svg',
-    "AUT": '/img/flags/austria.svg',
-    "B/S": '/img/flags/norway.svg',
-    "BoS": '/img/flags/sweden.svg',
-    "BS.": '/img/flags/norway.svg',
-    "BSHK": '/img/flags/sweden.svg',
-    "CAN": '/img/flags/canada.svg',
-    "Cz.": '/img/flags/czech-republic.svg',
-    "Czech": '/img/flags/czech-republic.svg',
-    "ES": '/img/flags/spain.svg',
-    "FIN": '/img/flags/finland.svg',
-    "Fr.": '/img/flags/switzerland.svg',
-    "FRA": '/img/flags/france.svg',
-    "Fribourg": '/img/flags/switzerland.svg',
-    "GAK": '/img/flags/austria.svg',
-    "Gr.": '/img/flags/greece.svg',
-    "Greece": '/img/flags/greece.svg',
-    "IT": '/img/flags/italy.svg',
-    "JSS": '/img/flags/sweden.svg',
-    "KS.": '/img/flags/norway.svg',
-    "KSTK": '/img/flags/norway.svg',
-    "LUK": '/img/flags/denmark.svg',
-    "MKK": '/img/flags/sweden.svg',
-    "Mo.": '/img/flags/monaco.svg',
-    "Monaco": '/img/flags/monaco.svg',
-    "Ne.": '/img/flags/netherlands.svg',
-    "Netherland": '/img/flags/netherlands.svg',
-    "PL": '/img/flags/republic-of-poland.svg',
-    "ROU": '/img/flags/romania.svg',
-    "SD.": '/img/flags/switzerland.svg',
-    "SDG": '/img/flags/switzerland.svg',
-    "SDRD": '/img/flags/switzerland.svg',
-    "Sp.": '/img/flags/norway.svg',
-    "SP.": '/img/flags/sweden.svg',
-    "SPIF": '/img/flags/sweden.svg',
-    "Spinn": '/img/flags/norway.svg',
-    "SSC": '/img/flags/norway.svg',
-    "Sw.": '/img/flags/switzerland.svg',
-    "Swiss": '/img/flags/switzerland.svg',
-    "Ti.": '/img/flags/finland.svg',
-    "Tiirat": '/img/flags/finland.svg',
-    "Va.": '/img/flags/finland.svg',
-    "VanDi": '/img/flags/finland.svg',
-    "VSS": '/img/flags/sweden.svg',
-    "BLR": '/img/flags/belarus.svg',
-    "UKR": '/img/flags/ukraine.svg' };
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });var BO = {
+  ASV: "/img/flags/austria.svg",
+  AUT: "/img/flags/austria.svg",
+  "B/S": "/img/flags/norway.svg",
+  BoS: "/img/flags/sweden.svg",
+  "BS.": "/img/flags/norway.svg",
+  BSHK: "/img/flags/sweden.svg",
+  CAN: "/img/flags/canada.svg",
+  "Cz.": "/img/flags/czech-republic.svg",
+  Czech: "/img/flags/czech-republic.svg",
+  ES: "/img/flags/spain.svg",
+  FIN: "/img/flags/finland.svg",
+  "Fr.": "/img/flags/switzerland.svg",
+  FRA: "/img/flags/france.svg",
+  Fribourg: "/img/flags/switzerland.svg",
+  GAK: "/img/flags/austria.svg",
+  "Gr.": "/img/flags/greece.svg",
+  Greece: "/img/flags/greece.svg",
+  IT: "/img/flags/italy.svg",
+  JSS: "/img/flags/sweden.svg",
+  "KS.": "/img/flags/norway.svg",
+  KSTK: "/img/flags/norway.svg",
+  LUK: "/img/flags/denmark.svg",
+  MKK: "/img/flags/sweden.svg",
+  "Mo.": "/img/flags/monaco.svg",
+  Monaco: "/img/flags/monaco.svg",
+  "Ne.": "/img/flags/netherlands.svg",
+  Netherland: "/img/flags/netherlands.svg",
+  PL: "/img/flags/republic-of-poland.svg",
+  ROU: "/img/flags/romania.svg",
+  "SD.": "/img/flags/switzerland.svg",
+  SDG: "/img/flags/switzerland.svg",
+  SDRD: "/img/flags/switzerland.svg",
+  "Sp.": "/img/flags/norway.svg",
+  "SP.": "/img/flags/sweden.svg",
+  SPIF: "/img/flags/sweden.svg",
+  Spinn: "/img/flags/norway.svg",
+  SSC: "/img/flags/norway.svg",
+  "Sw.": "/img/flags/switzerland.svg",
+  Swiss: "/img/flags/switzerland.svg",
+  "Ti.": "/img/flags/finland.svg",
+  Tiirat: "/img/flags/finland.svg",
+  "Va.": "/img/flags/finland.svg",
+  VanDi: "/img/flags/finland.svg",
+  VSS: "/img/flags/sweden.svg",
+  BLR: "/img/flags/belarus.svg",
+  UKR: "/img/flags/ukraine.svg" };
+
+var EJC2017 = {
+  AUT: "/img/flags/austria.svg",
+  BLR: "/img/flags/belarus.svg",
+  BUL: "/img/flags/bulgaria.svg",
+  ESP: "/img/flags/spain.svg",
+  FIN: "/img/flags/finland.svg",
+  FRA: "/img/flags/france.svg",
+  GBR: "/img/flags/united-kingdom.svg",
+  GER: "/img/flags/germany.svg",
+  GRE: "/img/flags/greece.svg",
+  ITA: "/img/flags/italy.svg",
+  LTU: "/img/flags/lithuania.svg",
+  NED: "/img/flags/netherlands.svg",
+  NOR: "/img/flags/norway.svg",
+  POL: "/img/flags/republic-of-poland.svg",
+  ROU: "/img/flags/romania.svg",
+  RUS: "/img/flags/russia.svg",
+  SRB: "/img/flags/serbia.svg",
+  SUI: "/img/flags/switzerland.svg",
+  SWE: "/img/flags/sweden.svg",
+  TUR: "/img/flags/turkey.svg",
+  UKR: "/img/flags/ukraine.svg" };exports.default =
+
+
+EJC2017;
 });
 ___scope___.file("infoscreen.js", function(exports, require, module, __filename, __dirname){
 
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = require("react");var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = require("react");var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
 
 Infoscreen = function (_React$Component) {_inherits(Infoscreen, _React$Component);
   function Infoscreen(props) {_classCallCheck(this, Infoscreen);var _this = _possibleConstructorReturn(this, (Infoscreen.__proto__ || Object.getPrototypeOf(Infoscreen)).call(this,
@@ -824,24 +1010,23 @@ Infoscreen = function (_React$Component) {_inherits(Infoscreen, _React$Component
     _this.socket = io("/divecalc");
     _this.socket.on(_this.props.channel, function (data) {
       console.log(data);
-      var key = data.event.name;
-      var c = Object.assign({}, _this.state.competitions);
-      c[key] = data;
-      _this.setState({ competitions: c });
+      _this.setState({ competitions: data });
     });
     _this.state = { competitions: {} };return _this;
   }_createClass(Infoscreen, [{ key: "componentWillUnmount", value: function componentWillUnmount()
     {
       this.socket.off(this.props.channel);
     } }, { key: "render", value: function render()
-    {var _this2 = this;
-      return (
-        _react2.default.createElement("div", { className: "bigscreen" },
-          Object.keys(this.state.competitions).map(function (k) {return (
-              _react2.default.createElement(Scoreboard, _extends({ key: k }, _this2.state.competitions[k])));})));
+    {
+      var compName = this.props.competition;
+      var comp = compName ?
+      this.state.competitions[compName] :
+      this.state.competitions[Object.keys(this.state.competitions)[0]];
+      return comp ?
+      _react2.default.createElement("div", { className: "bigscreen" },
+        _react2.default.createElement(Scoreboard, comp)) :
 
-
-
+      false;
     } }]);return Infoscreen;}(_react2.default.Component);exports.default = Infoscreen;var
 
 
@@ -868,6 +1053,76 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
           return false;}
 
     } }]);return Scoreboard;}(_react2.default.Component);
+});
+___scope___.file("controls.js", function(exports, require, module, __filename, __dirname){
+
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = require("react");var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
+
+Controls = function (_React$Component) {_inherits(Controls, _React$Component);
+  function Controls(props) {_classCallCheck(this, Controls);var _this = _possibleConstructorReturn(this, (Controls.__proto__ || Object.getPrototypeOf(Controls)).call(this,
+    props));
+    _this.socket = io("/divecalc");
+    _this.socket.on(_this.props.channel, function (data) {
+      _this.setState({ competitions: data });
+    });
+    _this.state = { competitions: {} };return _this;
+  }_createClass(Controls, [{ key: "componentWillUnmount", value: function componentWillUnmount()
+    {
+      this.socket.off(this.props.channel);
+    } }, { key: "render", value: function render()
+    {var _this2 = this;
+      var competitions = Object.keys(this.state.competitions);
+      return (
+        _react2.default.createElement("div", { className: "controls" },
+          _react2.default.createElement("div", { className: "controls-header" },
+            _react2.default.createElement("h2", null,
+              competitions.length ?
+              "Active Competitions:" :
+              "No active competitions"),
+
+            _react2.default.createElement("button", {
+                onClick: function onClick() {
+                  _this2.socket.emit(_this2.props.channel, {
+                    type: "command",
+                    command: "clearAll" });
+
+                } }, "Clear all")),
+
+
+
+
+          competitions.map(function (k) {return (
+              _react2.default.createElement(Control, _extends({
+                key: k,
+                onDelete: function onDelete() {
+                  _this2.socket.emit("command", {
+                    type: "command",
+                    channel: _this2.props.channel,
+                    command: "clear",
+                    argument: k });
+
+                } },
+              _this2.state.competitions[k])));})));
+
+
+
+
+    } }]);return Controls;}(_react2.default.Component);exports.default = Controls;var
+
+
+Control = function (_React$Component2) {_inherits(Control, _React$Component2);
+  function Control(props) {_classCallCheck(this, Control);return _possibleConstructorReturn(this, (Control.__proto__ || Object.getPrototypeOf(Control)).call(this,
+    props));
+  }_createClass(Control, [{ key: "render", value: function render()
+    {
+      var props = this.props;
+      return (
+        _react2.default.createElement("div", { className: "control" },
+          _react2.default.createElement("h3", null, props.event.name),
+          _react2.default.createElement("button", { onClick: props.onDelete }, "Clear this competition")));
+
+
+    } }]);return Control;}(_react2.default.Component);
 });
 ___scope___.file("scoreboard.scss", function(exports, require, module, __filename, __dirname){
 

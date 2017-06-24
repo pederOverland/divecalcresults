@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import Board from "./scoreboard.js";
 import Screen from "./bigscreen.js";
 import InfoScreen from "./infoscreen.js";
+import Controls from "./controls.js";
 import "./scoreboard.scss";
 
 function getParameterByName(name, url) {
@@ -18,11 +19,14 @@ function getParameterByName(name, url) {
 }
 
 const channel = getParameterByName("channel");
+const competition = getParameterByName("competition");
 
 if (document.body.classList.contains("bigscreen")) {
   ReactDOM.render(<Screen channel={channel || 'screen'} />, document.getElementById("scoreboard"));
 } else if(document.body.classList.contains("infoscreen")){
-  ReactDOM.render(<InfoScreen channel={channel || 'screen'} />, document.getElementById("scoreboard"));
+  ReactDOM.render(<InfoScreen competition={competition} channel={channel || 'screen'} />, document.getElementById("scoreboard"));
+} else if(document.body.classList.contains("controls")){
+  ReactDOM.render(<Controls channel={channel || 'screen'} />, document.getElementById("scoreboard"));
 } else {
-  ReactDOM.render(<Board channel={channel || 'stream'} />, document.getElementById("scoreboard"));
+  ReactDOM.render(<Board competition={competition} channel={channel || 'stream'} />, document.getElementById("scoreboard"));
 }
