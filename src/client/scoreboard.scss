@@ -43,7 +43,8 @@ div.bigscreen {
         }
         .standingsHeader {
             position: relative;
-            background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.8));
+            background: url(/img/lenbstk.png) no-repeat 660px, linear-gradient(to right, white, rgba(255, 255, 255, 0.8));
+            background-size: 400px, 100%;   
             margin-left: 100px;
             min-height: 100px;
             padding: 0;
