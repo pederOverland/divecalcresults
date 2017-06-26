@@ -119,9 +119,9 @@ class Scoreboard extends React.Component {
           ? event.results.sort((a, b) => a.position - b.position)
           : event.results;
         const size = results.length;
-        if (size > 10) {
-          const start = (this.state.slice - 1) * 10;
-          results = results.slice(start, start + 10);
+        if (size > 9) {
+          const start = (this.state.slice - 1) * 9;
+          results = results.slice(start, start + 9);
           if (start > size) {
             return false;
           }

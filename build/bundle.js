@@ -654,9 +654,9 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
           event.results.sort(function (a, b) {return a.position - b.position;}) :
           event.results;
           var size = results.length;
-          if (size > 10) {
-            var start = (this.state.slice - 1) * 10;
-            results = results.slice(start, start + 10);
+          if (size > 9) {
+            var start = (this.state.slice - 1) * 9;
+            results = results.slice(start, start + 9);
             if (start > size) {
               return false;
             }
