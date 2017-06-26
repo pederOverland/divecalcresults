@@ -291,245 +291,6 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
           return _react2.default.createElement("div", null);}
 
     } }]);return Scoreboard;}(_react2.default.Component);exports.default = Scoreboard;
-
-
-var startList = {
-  endDateFmt: "Jan 15, 2017",
-  endDate: 1484470986000,
-  action: "startlist",
-  dateFmt: "Mar 7, 2017",
-  competition: "Landslagstest",
-  place: "AdO arena, Bergen",
-  dateTimeFmt: "3/7/17 1:29 PM",
-  event: {
-    divesPerRound: 1,
-    round: 8,
-    startTimeFmt: "1/15/17 2:00 PM",
-    name: "Teskonkurranse 3m, Forsøk",
-    startTime: 1484485200000,
-    finished: true,
-    pk: 2,
-    endTime: 1484488800000,
-    endTimeFmt: "1/15/17 3:00 PM",
-    type: "TEAM",
-    results: [
-    {
-      result: "220.35",
-      name: "Anne Sofie Moe Holm / Julie Synnøve Thorsen",
-      rank: 1,
-      pk: 4,
-      position: 2,
-      team: "BS.",
-      shortName: "A. Holm / J. Thorsen" },
-
-    {
-      result: "219.90",
-      diffToFirst: "-0.45",
-      name: "Amalie Marie Kupka / Serina Haldorsen",
-      rank: 2,
-      pk: 3,
-      position: 4,
-      team: "BS.",
-      shortName: "A. Kupka / S. Haldorsen" },
-
-    {
-      result: "197.00",
-      diffToFirst: "-23.35",
-      name: "Jonas Erik Thorsen / Martin Nåden Dyrstad",
-      rank: 3,
-      pk: 8,
-      position: 6,
-      team: "B/S",
-      shortName: "J. Thorsen / M. Nåden Dyrstad" },
-
-    {
-      result: "191.35",
-      diffToFirst: "-29.00",
-      name: "Caroline Sofie Kupka / Safyia Elmrani",
-      rank: 4,
-      pk: 5,
-      position: 3,
-      team: "B/S",
-      shortName: "C. Kupka / S. Elmrani" },
-
-    {
-      result: "187.75",
-      diffToFirst: "-32.60",
-      name: "Emil Ruenes Jacobsen / Philip Sandve",
-      rank: 5,
-      pk: 6,
-      position: 1,
-      team: "KS.",
-      shortName: "E. Jacobsen / P. Sandve" },
-
-    {
-      result: "180.80",
-      diffToFirst: "-39.55",
-      name: "Henry Kristiansen / Ulrik Hvarnes Evensen",
-      rank: 6,
-      pk: 7,
-      position: 5,
-      team: "SP.",
-      shortName: "Kristiansen / Hvarnes Evensen" }],
-
-
-    rounds: 8 },
-
-  diver: {
-    result: "187.75",
-    name: "Emil Ruenes Jacobsen / Philip Sandve",
-    rank: 5,
-    pk: 6,
-    position: 1,
-    team: "KS.",
-    dive: {
-      dd: "1.7",
-      actualAwards: ["3.0", "3.5", "3.0"],
-      penalty: "0.0",
-      sum: "9.50",
-      result: "16.15",
-      total: "58.55",
-      effectiveAwards: ["3.0", "3.5", "3.0"],
-      maxAward: "10",
-      position: 3,
-      dive: "401A",
-      height: "3" },
-
-    shortName: "E. Jacobsen / P. Sandve" },
-
-  startDate: 1484470986000,
-  startDateFmt: "Jan 15, 2017",
-  latestUpdate: 1488889771221 };
-
-
-var baseAward = {
-  endDateFmt: "Jan 15, 2017",
-  endDate: 1484470986000,
-  action: "awards",
-  dateFmt: "Mar 7, 2017",
-  competition: "Landslagstest",
-  place: "AdO arena, Bergen",
-  dateTimeFmt: "3/7/17 10:02 AM",
-  event: {
-    divesPerRound: 1,
-    round: 1,
-    startTimeFmt: "1/15/17 10:03 AM",
-    name: "Testkonkurranse 3m x, Forsøk",
-    startTime: 1484470986000,
-    finished: true,
-    pk: 13,
-    endTime: 1484470986000,
-    endTimeFmt: "1/15/17 10:03 AM",
-    type: "NORMAL",
-    results: [
-    {
-      result: "19.20",
-      name: "Caroline Sofie Kupka",
-      rank: 1,
-      pk: 54,
-      position: 2,
-      team: "BS.",
-      shortName: "Caroline Sofie Kupka" },
-
-    {
-      result: "3.60",
-      diffToFirst: "-15.60",
-      name: "Anne Sofie Moe Holm",
-      rank: 2,
-      pk: 53,
-      position: 1,
-      team: "BS.",
-      shortName: "Anne Sofie Moe Holm" }],
-
-
-    rounds: 1 },
-
-  diver: {
-    result: "19.20",
-    name: "Caroline Sofie Kupka",
-    rank: 1,
-    pk: 54,
-    position: 2,
-    team: "BS.",
-    dive: {
-      dd: "1.2",
-      actualAwards: ["5.0", "6.0", "5.0"],
-      penalty: "0.0",
-      sum: "16.00",
-      result: "19.20",
-      total: "19.20",
-      effectiveAwards: ["5.0", "6.0", "5.0"],
-      maxAward: "10",
-      position: 1,
-      dive: "101C",
-      height: "1" },
-
-    shortName: "Caroline Sofie Kupka" },
-
-  startDate: 1484470986000,
-  startDateFmt: "Jan 15, 2017",
-  latestUpdate: 1488877365912 };
-
-
-var baseDive = {
-  endDateFmt: "Jan 15, 2017",
-  endDate: 1484470986000,
-  action: "dive",
-  dateFmt: "Mar 7, 2017",
-  competition: "Landslagstest",
-  place: "AdO arena, Bergen",
-  dateTimeFmt: "3/7/17 8:54 AM",
-  event: {
-    divesPerRound: 1,
-    round: 1,
-    startTimeFmt: "1/15/17 10:03 AM",
-    name: "Testkonkurranse 3m x, Forsøk",
-    startTime: 1484470986000,
-    finished: false,
-    pk: 13,
-    endTime: 1484470986000,
-    endTimeFmt: "1/15/17 10:03 AM",
-    type: "NORMAL",
-    results: [
-    {
-      result: "3.60",
-      pending: false,
-      name: "Anne Sofie Moe Holm",
-      rank: 1,
-      pk: 53,
-      position: 1,
-      team: "BS.",
-      shortName: "Anne Sofie Moe Holm" },
-
-    {
-      result: "0.00",
-      diffToFirst: "-3.60",
-      needAwards: [{ toRank: 1, award: "1" }],
-      pending: true,
-      name: "Caroline Sofie Kupka",
-      rank: 2,
-      pk: 54,
-      position: 2,
-      team: "BS.",
-      shortName: "Caroline Sofie Kupka" }],
-
-
-    rounds: 1 },
-
-  diver: {
-    result: "0.00",
-    needAwards: [{ toRank: 1, award: "1" }],
-    name: "Caroline Sofie Kupka",
-    rank: 2,
-    pk: 54,
-    position: 2,
-    team: "BS.",
-    dive: { dd: "1.2", position: 1, dive: "101C", height: "1" },
-    shortName: "Caroline Sofie Kupka" },
-
-  startDate: 1484470986000,
-  startDateFmt: "Jan 15, 2017",
-  latestUpdate: 1488873245148 };
 });
 ___scope___.file("bigscreen.js", function(exports, require, module, __filename, __dirname){
 
@@ -582,6 +343,9 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
         case "judges":
           var panels = event.judges.panels.map(function (p) {return p.judges;});
           var judges = [].concat.apply([], panels);
+          var numToShow = judges.length;
+          event.judges.referee && numToShow++;
+          event.judges.assistantReferee && numToShow++;
           return (
             _react2.default.createElement("div", { className: "standings" },
               _react2.default.createElement("div", { className: "standingsHeader" },
@@ -596,11 +360,15 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
               _react2.default.createElement("div", { className: "resultline" },
                 _react2.default.createElement("div", {
                   className: "position",
-                  style: { backgroundImage: "url(" + _logos2.default[event.judges.referee.team] + ")" } }),
+                  style: {
+                    backgroundImage:
+                    "url(" + _logos2.default[event.judges.referee.team] + ")", backgroundSize: 'contain' } }),
+
 
                 _react2.default.createElement("div", { className: "name" },
                   event.judges.referee.name.toLowerCase(),
-                  event.judges.referee.nationality && " (" + event.judges.referee.nationality + ")"),
+                  event.judges.referee.nationality &&
+                  " (" + event.judges.referee.nationality + ")"),
 
                 _react2.default.createElement("div", { className: "role" }, "Referee")),
 
@@ -608,16 +376,21 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
               _react2.default.createElement("div", { className: "resultline" },
                 _react2.default.createElement("div", {
                   className: "position",
-                  style: { backgroundImage: "url(" + _logos2.default[event.judges.assistantReferee.team] + ")" } }),
+                  style: {
+                    backgroundImage:
+                    "url(" + _logos2.default[event.judges.assistantReferee.team] + ")", backgroundSize: 'contain' } }),
+
 
                 _react2.default.createElement("div", { className: "name" },
                   event.judges.assistantReferee.name.toLowerCase(),
-                  event.judges.assistantReferee.nationality && " (" + event.judges.assistantReferee.nationality + ")"),
+                  event.judges.assistantReferee.nationality &&
+                  " (" + event.judges.assistantReferee.nationality + ")"),
 
                 _react2.default.createElement("div", { className: "role" }, "Ass. Referee")),
 
               event.judges.panels.map(function (p) {
                 var prefix = p.panel;
+                var showPanel = event.judges.panels.length > 1;
                 var count = 0;
                 var curr = null;
                 return p.judges.map(function (j) {
@@ -627,21 +400,20 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                     count = 0;
                   }
                   count += 1;
-                  return (
-                    _react2.default.createElement("div", { className: "resultline", key: j.position },
-                      _react2.default.createElement("div", {
-                        className: "position",
-                        style: { backgroundImage: "url(" + _logos2.default[j.team] + ")" } }),
+                  return _react2.default.createElement("div", { className: "resultline", key: j.position },
+                    _react2.default.createElement("div", { className: "position", style: { backgroundImage: "url(" + _logos2.default[j.team] + ")", backgroundSize: 'contain' } }),
+                    _react2.default.createElement("div", { className: "name" },
+                      j.name.toLowerCase(),
+                      j.nationality && " (" + j.nationality + ")"),
 
-                      _react2.default.createElement("div", { className: "name" },
-                        j.name.toLowerCase(),
-                        j.nationality && " (" + j.nationality + ")"),
-
-                      _react2.default.createElement("div", { className: "role" }, postfix, "\xA0", count)));
+                    _react2.default.createElement("div", { className: "role" },
+                      postfix, "\xA0", count,
+                      showPanel ? "(" + p.panel + ")" : ""));
 
 
                 });
               }),
+              numToShow < 11 &&
               _react2.default.createElement("div", { className: "standingsFooter" },
                 data.competition)));
 
@@ -658,7 +430,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
             var start = (this.state.slice - 1) * 10;
             results = results.slice(start, start + 10);
             if (start > size) {
-              return false;
+              setTimeout(function () {return _this4.setState({ slice: 1 });}, 10);
             }
             this.timeout = setTimeout(
             function () {return _this4.setState({ slice: _this4.state.slice + 1 });}.bind(this),
@@ -679,7 +451,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                   _react2.default.createElement("div", { className: "resultline", key: i },
                     _react2.default.createElement("div", {
                       className: "position",
-                      style: { backgroundImage: "url(" + _logos2.default[r.team] + ")" } }),
+                      style: { backgroundImage: "url(" + _logos2.default[r.team] + ")", backgroundSize: "contain" } }),
 
                     _react2.default.createElement("div", { className: "name" },
                       startlist ? r.position : r.rank, ".\xA0", r.name.toLowerCase(),
@@ -697,7 +469,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
           var match = /(\d+)(\w)/.exec(diver.dive.dive);
           var diveName = _dives2.default[match[1]];
           var divePos = match[2];
-          var showHeight = ["5", "7.5", "10"].indexOf(diver.dive.height) >= 0;
+          var showHeight = ["5", "7.5", "10", "7,5"].indexOf(diver.dive.height) >= 0;
           return (
             _react2.default.createElement("div", { className: "standings" },
               _react2.default.createElement("div", { className: "standingsHeader" },
@@ -715,7 +487,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
                   _react2.default.createElement("div", { className: "resultline", key: i },
                     _react2.default.createElement("div", {
                       className: "position",
-                      style: { backgroundImage: "url(" + _logos2.default[r.team] + ")" } }),
+                      style: { backgroundImage: "url(" + _logos2.default[r.team] + ")", backgroundSize: "contain" } }),
 
                     _react2.default.createElement("div", { className: "name" },
                       r.rank, ".\xA0", r.name.toLowerCase(),
@@ -995,7 +767,9 @@ var EJC2017 = {
   SUI: "/img/flags/switzerland.svg",
   SWE: "/img/flags/sweden.svg",
   TUR: "/img/flags/turkey.svg",
-  UKR: "/img/flags/ukraine.svg" };exports.default =
+  HUN: "/img/flags/hungary.svg",
+  UKR: "/img/flags/ukraine.svg",
+  "LEN TDC": "/img/lenflag.png" };exports.default =
 
 
 EJC2017;
