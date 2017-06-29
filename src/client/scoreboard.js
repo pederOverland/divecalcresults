@@ -3,14 +3,22 @@ import React from "react";
 export default class Scoreboard extends React.Component {
   constructor(props) {
     super(props);
+    this.filter = window.getParameterByName("filter");
     this.state = { data: {}, slice: 1 };
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
       console.log(data);
-      this.setState({
-        data: data[this.props.competition] || Object.values(data)[0],
-        slice: 1
-      });
+      const competitionData =
+        data[this.props.competition] || Object.values(data)[0];
+      if (
+        competitionData &&
+        (!this.filter || new RegExp(this.filter).test(competitionData.action))
+      ) {
+        this.setState({
+          data: competitionData,
+          slice: 1
+        });
+      }
     });
   }
   componentWillUnmount() {
@@ -54,9 +62,7 @@ export default class Scoreboard extends React.Component {
               </div>}
             {event.judges.assistantReferee &&
               <div className="resultline">
-                <div
-                  className="position"
-                />
+                <div className="position" />
                 <div className="name">
                   {event.judges.assistantReferee.name.toLowerCase()}
                   {event.judges.assistantReferee.nationality &&
@@ -77,9 +83,7 @@ export default class Scoreboard extends React.Component {
                 count += 1;
                 return (
                   <div className="resultline" key={j.position}>
-                    <div
-                      className="position"
-                    />
+                    <div className="position" />
                     <div className="name">
                       {j.name.toLowerCase()}
                       {j.nationality && " (" + j.nationality + ")"}
@@ -105,6 +109,11 @@ export default class Scoreboard extends React.Component {
           const start = (this.state.slice - 1) * 10;
           results = results.slice(start, start + 10);
           if (start > size) {
+            if ((this.filter = "results")) {
+              setTimeout(() => {
+                this.setState({ slice: 1 });
+              }, 10);
+            }
             return false;
           }
           this.timeout = setTimeout(

@@ -6,7 +6,7 @@ import InfoScreen from "./infoscreen.js";
 import Controls from "./controls.js";
 import "./scoreboard.scss";
 
-function getParameterByName(name, url) {
+window.getParameterByName = function(name, url) {
     if (!url) {
       url = window.location.href;
     }
