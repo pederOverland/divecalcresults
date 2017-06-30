@@ -52,7 +52,7 @@ var _infoscreen = require("./infoscreen.js");var _infoscreen2 = _interopRequireD
 var _controls = require("./controls.js");var _controls2 = _interopRequireDefault(_controls);
 require("./scoreboard.scss");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-function getParameterByName(name, url) {
+window.getParameterByName = function (name, url) {
   if (!url) {
     url = window.location.href;
   }
@@ -62,7 +62,7 @@ function getParameterByName(name, url) {
   if (!results) return null;
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
+};
 
 var channel = getParameterByName("channel");
 var competition = getParameterByName("competition");
@@ -84,14 +84,22 @@ ___scope___.file("scoreboard.js", function(exports, require, module, __filename,
 Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component);
   function Scoreboard(props) {_classCallCheck(this, Scoreboard);var _this = _possibleConstructorReturn(this, (Scoreboard.__proto__ || Object.getPrototypeOf(Scoreboard)).call(this,
     props));
+    _this.filter = window.getParameterByName("filter");
     _this.state = { data: {}, slice: 1 };
     _this.socket = io("/divecalc");
     _this.socket.on(_this.props.channel, function (data) {
       console.log(data);
-      _this.setState({
-        data: data[_this.props.competition] || Object.values(data)[0],
-        slice: 1 });
+      var competitionData =
+      data[_this.props.competition] || Object.values(data)[0];
+      if (
+      competitionData && (
+      !_this.filter || new RegExp(_this.filter).test(competitionData.action)))
+      {
+        _this.setState({
+          data: competitionData,
+          slice: 1 });
 
+      }
     });return _this;
   }_createClass(Scoreboard, [{ key: "componentWillUnmount", value: function componentWillUnmount()
     {
@@ -135,9 +143,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
               event.judges.assistantReferee &&
               _react2.default.createElement("div", { className: "resultline" },
-                _react2.default.createElement("div", {
-                  className: "position" }),
-
+                _react2.default.createElement("div", { className: "position" }),
                 _react2.default.createElement("div", { className: "name" },
                   event.judges.assistantReferee.name.toLowerCase(),
                   event.judges.assistantReferee.nationality &&
@@ -158,9 +164,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
                   count += 1;
                   return (
                     _react2.default.createElement("div", { className: "resultline", key: j.position },
-                      _react2.default.createElement("div", {
-                        className: "position" }),
-
+                      _react2.default.createElement("div", { className: "position" }),
                       _react2.default.createElement("div", { className: "name" },
                         j.name.toLowerCase(),
                         j.nationality && " (" + j.nationality + ")"),
@@ -186,6 +190,11 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
             var start = (this.state.slice - 1) * 10;
             results = results.slice(start, start + 10);
             if (start > size) {
+              if (this.filter = "results") {
+                setTimeout(function () {
+                  _this2.setState({ slice: 1 });
+                }, 10);
+              }
               return false;
             }
             this.timeout = setTimeout(
