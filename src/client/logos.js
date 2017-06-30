@@ -69,6 +69,8 @@ const EJC2017 = {
   TUR: "/img/flags/turkey.svg",
   HUN: "/img/flags/hungary.svg",
   UKR: "/img/flags/ukraine.svg",
+  CRO: "/img/flags/croatia.svg",
+  CZE: "/img/flags/czech-republic.svg",
   "LEN TDC": "/img/lenflag.png"
 };
 
