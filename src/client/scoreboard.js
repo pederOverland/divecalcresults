@@ -3,11 +3,11 @@ import React from "react";
 export default class Scoreboard extends React.Component {
   constructor(props) {
     super(props);
+    document.title = props.competition;
     this.filter = window.getParameterByName("filter");
     this.state = { data: {}, slice: 1 };
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
-      console.log(data);
       const competitionData =
         data[this.props.competition] || Object.values(data)[0];
       if (

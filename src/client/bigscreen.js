@@ -2,9 +2,12 @@ import React from "react";
 import dives from "./dives";
 import logos from "./logos";
 
+let hideScore = false;
+
 export default class Bigscreen extends React.Component {
   constructor(props) {
     super(props);
+    hideScore = window.getParameterByName("hideScore")!==null;
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
       this.setState({ competitions: data });
@@ -29,6 +32,7 @@ class Scoreboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = { slice: 1 };
+    document.title = props.competition;
   }
   componentWillReceiveProps() {
     this.setState({ slice: 1 });
@@ -36,7 +40,7 @@ class Scoreboard extends React.Component {
   render() {
     if (this.timeout) {
       clearTimeout(this.timeout);
-      delete this.timeout;
+      delete this.timeout;  
     }
     //this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
     const data = this.props;
@@ -180,14 +184,16 @@ class Scoreboard extends React.Component {
               <div className="competition">
                 {event.name}
               </div>
+              {!hideScore &&
               <div className="description">
                 {"Top " +
                   event.results.filter(r => r.rank > 0).slice(0, 5).length +
                   " round " +
                   event.round}
               </div>
+              }
             </div>
-            {event.results.filter(r => r.rank > 0).slice(0, 5).map((r, i) =>
+            {!hideScore && event.results.filter(r => r.rank > 0).slice(0, 5).map((r, i) =>
               <div className="resultline" key={i}>
                 <div
                   className="position"

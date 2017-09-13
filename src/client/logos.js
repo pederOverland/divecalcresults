@@ -71,7 +71,17 @@ const EJC2017 = {
   UKR: "/img/flags/ukraine.svg",
   CRO: "/img/flags/croatia.svg",
   CZE: "/img/flags/czech-republic.svg",
-  "LEN TDC": "/img/lenflag.png"
+  "LEN TDC": "/img/lenflag.png",
+  "Kle": "/img/Kle.png",
+  "Osl": "/img/Osl.png",
+  "Spi": "/img/spinn.png",
+  "KST": "/img/kristiansand.png",
+  //"BaS": "/img/",
+  "SSC": "/img/ssc.png",
+  "RS": "/img/randaberg.png",
+  "rs": "/img/randaberg.png",
+  "BSt": "/img/BStKlogo.svg",
+  "TS&": "/img/trondheim.png"
 };
 
 export default EJC2017;
