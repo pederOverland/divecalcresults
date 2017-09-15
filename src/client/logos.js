@@ -76,7 +76,7 @@ const EJC2017 = {
   "Osl": "/img/Osl.png",
   "Spi": "/img/spinn.png",
   "KST": "/img/kristiansand.png",
-  //"BaS": "/img/",
+  "BaS": "/img/Bas.png",
   "SSC": "/img/ssc.png",
   "RS": "/img/randaberg.png",
   "rs": "/img/randaberg.png",
