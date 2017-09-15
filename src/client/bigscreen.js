@@ -234,7 +234,7 @@ class Scoreboard extends React.Component {
             </div>
             {data.action == "dive"
               ? <div className="whiteline awardline">
-                  <div>Current rank: {diver.rank}</div>
+                  <div>Current rank: {hideScore ? "N/A" : diver.rank}</div>
                   <div>Total: {diver.result}</div>
                   <div className="divename">{diveName}</div>
                 </div>
@@ -250,7 +250,7 @@ class Scoreboard extends React.Component {
               ? <div className="whiteline awardline">
                   <div>Dive: {diver.dive.result}</div>
                   <div>Total: {diver.result}</div>
-                  <div>Rank: {diver.rank}</div>
+                  <div>Rank: {hideScore ? "N/A" : diver.rank}</div>
                 </div>
               : false}
             {data.action == "awards" &&
