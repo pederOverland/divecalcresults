@@ -10,6 +10,7 @@ export default class Bigscreen extends React.Component {
     hideScore = window.getParameterByName("hideScore")!==null;
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
+      console.log(data);
       this.setState({ competitions: data });
     });
     this.state = { competitions: {} };
@@ -20,8 +21,8 @@ export default class Bigscreen extends React.Component {
   render() {
     return (
       <div className="bigscreen">
-        {Object.keys(this.state.competitions).map(k =>
-          <Scoreboard key={k} {...this.state.competitions[k]} />
+        {Object.keys(this.state.competitions).map(k=>this.state.competitions[k]).sort((a,b)=>{return b.latestUpdate - a.latestUpdate}).slice(0,2).map(k =>
+          <Scoreboard key={k.event.name} {...k} />
         )}
       </div>
     );
@@ -70,7 +71,7 @@ class Scoreboard extends React.Component {
                   className="position"
                   style={{
                     backgroundImage:
-                      "url(" + logos[event.judges.referee.team] + ")", backgroundSize: 'contain'
+                      "url(" + (logos[event.judges.referee.nationality] || logos[event.judges.referee.team]) + ")", backgroundSize: 'contain'
                   }}
                 />
                 <div className="name">
@@ -159,7 +160,7 @@ class Scoreboard extends React.Component {
               <div className="resultline" key={i}>
                 <div
                   className="position"
-                  style={{ backgroundImage: "url(" + logos[r.team] + ")", backgroundSize: "contain" }}
+                  style={{ backgroundImage: "url(" + (logos[r.nationality] || logos[r.team]) + ")", backgroundSize: "contain" }}
                 />
                 <div className="name">
                   {startlist ? r.position : r.rank}.&nbsp;{r.name.toLowerCase()}
@@ -197,7 +198,7 @@ class Scoreboard extends React.Component {
               <div className="resultline" key={i}>
                 <div
                   className="position"
-                  style={{ backgroundImage: "url(" + logos[r.team] + ")", backgroundSize: "contain" }}
+                  style={{ backgroundImage: "url(" + (logos[r.nationality] || logos[r.team]) + ")", backgroundSize: "contain" }}
                 />
                 <div className="name">
                   {r.rank}.&nbsp;{r.name.toLowerCase()}
