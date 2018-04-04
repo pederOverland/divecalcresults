@@ -1,6 +1,7 @@
 import React from "react";
 import dives from "./dives";
 import logos from "./logos";
+import _ from "lodash";
 
 let hideScore = false;
 
@@ -19,6 +20,7 @@ export default class Bigscreen extends React.Component {
     this.socket.off(this.props.channel);
   }
   render() {
+    var competitions = _(this.state.competitions).sortBy(x=>-x.transmitted).take(2).value();
     return (
       <div className="bigscreen">
         {Object.keys(this.state.competitions).map(k=>this.state.competitions[k]).sort((a,b)=>{return b.latestUpdate - a.latestUpdate}).slice(0,2).map(k =>
@@ -43,6 +45,7 @@ class Scoreboard extends React.Component {
       clearTimeout(this.timeout);
       delete this.timeout;  
     }
+    console.log(this.props);
     //this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
     const data = this.props;
     const diver = data.diver;
