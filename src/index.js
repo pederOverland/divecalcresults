@@ -18,6 +18,7 @@ const state = {};
 router.post("/data/:channel", ctx => {
   state[ctx.params.channel] = state[ctx.params.channel] || {};
   state[ctx.params.channel][ctx.request.body.event.name] = ctx.request.body;
+  state[ctx.params.channel][ctx.request.body.event.name].transmitted = new Date().getTime();
   io.broadcast(ctx.params.channel, state[ctx.params.channel]);
   ctx.body = { hi: true };
 });
