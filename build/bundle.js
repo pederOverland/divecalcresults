@@ -539,7 +539,7 @@ Scoreboard = function (_React$Component2) {_inherits(Scoreboard, _React$Componen
 
               data.action == "dive" ?
               _react2.default.createElement("div", { className: "whiteline awardline" },
-                _react2.default.createElement("div", null, "Current rank: ", diver.rank),
+                _react2.default.createElement("div", null, "Current rank: ", hideScore ? "N/A" : diver.rank),
                 _react2.default.createElement("div", null, "Total: ", diver.result),
                 _react2.default.createElement("div", { className: "divename" }, diveName)) :
 
