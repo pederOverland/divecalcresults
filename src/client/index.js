@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Board from "./scoreboard.js";
+import Board from "./scoreboard";
 import Screen from "./bigscreen.js";
 import InfoScreen from "./infoscreen.js";
 import Controls from "./controls.js";
