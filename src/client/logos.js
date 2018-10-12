@@ -86,4 +86,8 @@ const EJC2017 = {
   UKR: "/img/flags/ukraine.svg"
 };
 
+const ddd = {
+  DDD: "/img/dods.svg"
+}
+
 export default EJC2017;
