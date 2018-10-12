@@ -24,6 +24,7 @@ const competition = getParameterByName("competition");
 if (document.body.classList.contains("bigscreen")) {
   ReactDOM.render(<Screen channel={channel || 'screen'} />, document.getElementById("scoreboard"));
 } else if(document.body.classList.contains("infoscreen")){
+  console.log("RENDERING INFO", channel, competition)
   ReactDOM.render(<InfoScreen competition={competition} channel={channel || 'screen'} />, document.getElementById("scoreboard"));
 } else if(document.body.classList.contains("controls")){
   ReactDOM.render(<Controls channel={channel || 'screen'} />, document.getElementById("scoreboard"));

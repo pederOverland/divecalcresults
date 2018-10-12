@@ -58,6 +58,7 @@ const EJC2017 = {
   "Spi": "/img/spinn.png",
   "SSC": "/img/ssc.png",
   "TS&": "/img/trondheim.png",
+  "PSK": "/img/pingvin.jpg",
   AUT: "/img/flags/austria.svg",
   BLR: "/img/flags/belarus.svg",
   BUL: "/img/flags/bulgaria.svg",
