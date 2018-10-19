@@ -1,5 +1,5 @@
 import React from "react";
-
+import { StreamPosition, Flag } from "./positions";
 export default class Scoreboard extends React.Component {
   constructor(props) {
     super(props);
@@ -10,6 +10,9 @@ export default class Scoreboard extends React.Component {
     this.socket.on(this.props.channel, data => {
       const competitionData =
         data[this.props.competition] || Object.values(data)[0];
+        if(this.filter == 'results' && competitionData){
+          competitionData.action = "results";
+        }
       if (
         competitionData &&
         (!this.filter || new RegExp(this.filter).test(competitionData.action))
@@ -43,14 +46,10 @@ export default class Scoreboard extends React.Component {
         return (
           <div className="standings">
             <div className="standingsHeader">
-              <div className="competition">
-                {event.name}
-              </div>
-              <div className="description">
-                Judges
-              </div>
+              <div className="competition">{event.name}</div>
+              <div className="description">Judges</div>
             </div>
-            {event.judges.referee &&
+            {event.judges.referee && (
               <div className="resultline">
                 <div className="position" />
                 <div className="name">
@@ -59,8 +58,9 @@ export default class Scoreboard extends React.Component {
                     " (" + event.judges.referee.nationality + ")"}
                 </div>
                 <div className="role">Referee</div>
-              </div>}
-            {event.judges.assistantReferee &&
+              </div>
+            )}
+            {event.judges.assistantReferee && (
               <div className="resultline">
                 <div className="position" />
                 <div className="name">
@@ -69,7 +69,8 @@ export default class Scoreboard extends React.Component {
                     " (" + event.judges.assistantReferee.nationality + ")"}
                 </div>
                 <div className="role">Ass. Referee</div>
-              </div>}
+              </div>
+            )}
             {event.judges.panels.map(p => {
               const prefix = p.panel;
               let count = 0;
@@ -88,14 +89,16 @@ export default class Scoreboard extends React.Component {
                       {j.name.toLowerCase()}
                       {j.nationality && " (" + j.nationality + ")"}
                     </div>
-                    <div className="role">{postfix}&nbsp;{count}</div>
+                    <div className="role">
+                      {postfix}
+                      &nbsp;
+                      {count}
+                    </div>
                   </div>
                 );
               });
             })}
-            <div className="standingsFooter">
-              {data.competition}
-            </div>
+            <div className="standingsFooter">{data.competition}</div>
           </div>
         );
       case "startlist":
@@ -124,35 +127,32 @@ export default class Scoreboard extends React.Component {
         return (
           <div className="standings">
             <div className="standingsHeader">
-              <div className="competition">
-                {event.name}
-              </div>
+              <div className="competition">{event.name}</div>
               <div className="description">
                 {startlist ? "Start list" : "Results round " + event.round}
               </div>
             </div>
-            {results.map((r, i) =>
+            {results.map((r, i) => (
               <div className="resultline" key={i}>
                 <div className="position">
                   {startlist ? r.position : r.rank}
                 </div>
                 <div className="name">
+                  <Flag team={r.team} />
                   {r.name.toLowerCase()}
                   {r.nationality && " (" + r.nationality + ")"}
                 </div>
                 {!startlist && <div className="points">{r.result}</div>}
               </div>
-            )}
-            <div className="standingsFooter">
-              {data.competition}
-            </div>
+            ))}
+            <div className="standingsFooter">{data.competition}</div>
           </div>
         );
       case "dive":
         return (
           <div className="dive">
             <div className="header">
-              <div className="position">{diver.position}</div>
+              <StreamPosition diver={diver} />
               <span className="name">
                 {" " + diver.name.toLowerCase()}
                 {diver.nationality && " (" + diver.nationality + ")"}
@@ -160,7 +160,9 @@ export default class Scoreboard extends React.Component {
             </div>
             <div className="data">
               <div className="item">
-                <div>Round {event.round}/{event.rounds}</div>
+                <div>
+                  Round {event.round}/{event.rounds}
+                </div>
               </div>
               <div className="item">
                 <div>Dive {diver.dive.dive}</div>
@@ -180,7 +182,7 @@ export default class Scoreboard extends React.Component {
         return (
           <div className="awards">
             <div className="header">
-              <span className="position">{diver.position}</span>
+              <StreamPosition diver={diver} />
               <span className="name">
                 {" " + diver.name.toLowerCase()}
                 {diver.nationality && " (" + diver.nationality + ")"}
@@ -188,31 +190,44 @@ export default class Scoreboard extends React.Component {
             </div>
             <div className="data">
               <div className="item">
-                <div>Round {event.round}/{event.rounds}</div>
+                <div>
+                  Round {event.round}/{event.rounds}
+                </div>
                 <div>Current rank: {diver.rank}</div>
               </div>
               <div className="item">
-                <div>Dive <strong>{diver.dive.result}</strong></div>
-                <div>Total <strong>{diver.result}</strong></div>
+                <div>
+                  Dive <strong>{diver.dive.result}</strong>
+                </div>
+                <div>
+                  Total <strong>{diver.result}</strong>
+                </div>
               </div>
             </div>
             <div className="data judgeAwards">
-              {diver.dive.effectiveAwards.map((a, i) =>
-                <div className="judgeAward" key={i}>{a}</div>
-              )}
-            </div>
-            {!/0[,.]0/.test(diver.dive.penalty) || diver.dive.maxAward != "10"
-              ? <div className="data judgeAwards">
-                  <div className="judgeAward">
-                    {!/0[,.]0/.test(diver.dive.penalty) &&
-                      <div>Penalty: {diver.dive.penalty}</div>}
-                  </div>
-                  <div className="judgeAward">
-                    {diver.dive.maxAward != "10" &&
-                      <div>Max Award: {diver.dive.maxAward}</div>}
-                  </div>
+              {diver.dive.effectiveAwards.map((a, i) => (
+                <div className="judgeAward" key={i}>
+                  {a}
                 </div>
-              : false}
+              ))}
+            </div>
+            {!/0[,.]0/.test(diver.dive.penalty) ||
+            diver.dive.maxAward != "10" ? (
+              <div className="data judgeAwards">
+                <div className="judgeAward">
+                  {!/0[,.]0/.test(diver.dive.penalty) && (
+                    <div>Penalty: {diver.dive.penalty}</div>
+                  )}
+                </div>
+                <div className="judgeAward">
+                  {diver.dive.maxAward != "10" && (
+                    <div>Max Award: {diver.dive.maxAward}</div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              false
+            )}
           </div>
         );
       default:
