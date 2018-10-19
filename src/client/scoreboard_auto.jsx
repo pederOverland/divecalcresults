@@ -8,21 +8,61 @@ export default class Scoreboard extends React.Component {
     this.state = { data: {}, slice: 1 };
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
-      const competitionData =
-        data[this.props.competition] || Object.values(data)[0];
-        if(this.filter == 'results' && competitionData){
-          competitionData.action = "results";
-        }
-      if (
-        competitionData &&
-        (!this.filter || new RegExp(this.filter).test(competitionData.action))
-      ) {
-        this.setState({
-          data: competitionData,
-          slice: 1
-        });
-      }
+      this.handleData(data);
     });
+  }
+  handleData(data) {
+    var self = this;
+    const competitionData =
+      data[this.props.competition] || Object.values(data)[0];
+    competitionData && console.log(competitionData.action, competitionData);
+    if(this.filter == 'results' && competitionData){
+      competitionData.action = "results";
+    }
+    if (
+      competitionData &&
+      (!this.filter || new RegExp(this.filter).test(competitionData.action))
+    ) {
+      if (this.lock) {
+        this.lockData = competitionData;
+        return;
+      }
+      switch (competitionData.action) {
+        case "awards":
+          this.lock = setTimeout(() => {
+            delete self.lock;
+            if (self.lockData) {
+              self.setState({
+                data: self.lockData,
+                slice: 1
+              });
+            }
+            delete self.lockData;
+          }, 12000);
+          setTimeout(function() {
+            self.setState({
+              data: competitionData,
+              slice: 1
+            });
+          }, 2000);
+          if (
+            competitionData.diver.position ==
+            competitionData.event.results.length
+          ) {
+            setTimeout(() => {
+              competitionData.action = "results";
+              self.setState({
+                data: competitionData,
+                slice: 1
+              });
+            }, 7000);
+          }
+          break;
+        default:
+          self.setState({ data: competitionData, slice: 1 });
+          break;
+      }
+    }
   }
   componentWillUnmount() {
     this.socket.off(this.props.channel);
@@ -121,7 +161,7 @@ export default class Scoreboard extends React.Component {
           }
           this.timeout = setTimeout(
             (() => this.setState({ slice: this.state.slice + 1 })).bind(this),
-            10000
+            5000
           );
         }
         return (
@@ -149,6 +189,10 @@ export default class Scoreboard extends React.Component {
           </div>
         );
       case "dive":
+        var self = this;
+        self.timeout = setTimeout(() => {
+          self.setState({ data: null, slice: 1 });
+        }, 5000);
         return (
           <div className="dive">
             <div className="header">
@@ -179,6 +223,10 @@ export default class Scoreboard extends React.Component {
           </div>
         );
       case "awards":
+        var self = this;
+        self.timeout = setTimeout(() => {
+          self.setState({ data: null, slice: 1 });
+        }, 5000);
         return (
           <div className="awards">
             <div className="header">

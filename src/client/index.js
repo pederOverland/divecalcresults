@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Board from "./scoreboard";
+import AutoBoard from "./scoreboard_auto";
 import Screen from "./bigscreen.js";
 import InfoScreen from "./infoscreen.js";
 import Controls from "./controls.js";
@@ -20,6 +21,7 @@ window.getParameterByName = function(name, url) {
 
 const channel = getParameterByName("channel");
 const competition = getParameterByName("competition");
+const auto = getParameterByName("auto");
 
 if (document.body.classList.contains("bigscreen")) {
   ReactDOM.render(<Screen channel={channel || 'screen'} />, document.getElementById("scoreboard"));
@@ -27,6 +29,8 @@ if (document.body.classList.contains("bigscreen")) {
   ReactDOM.render(<InfoScreen competition={competition} channel={channel || 'screen'} />, document.getElementById("scoreboard"));
 } else if(document.body.classList.contains("controls")){
   ReactDOM.render(<Controls channel={channel || 'screen'} />, document.getElementById("scoreboard"));
+} else if(auto=='true') {
+  ReactDOM.render(<AutoBoard competition={competition} channel={channel || 'stream'} />, document.getElementById("scoreboard"));
 } else {
   ReactDOM.render(<Board competition={competition} channel={channel || 'stream'} />, document.getElementById("scoreboard"));
 }

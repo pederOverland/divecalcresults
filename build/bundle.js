@@ -47,6 +47,7 @@ ___scope___.file("index.js", function(exports, require, module, __filename, __di
 "use strict";var _react = require("react");var _react2 = _interopRequireDefault(_react);
 var _reactDom = require("react-dom");var _reactDom2 = _interopRequireDefault(_reactDom);
 var _scoreboard = require("./scoreboard");var _scoreboard2 = _interopRequireDefault(_scoreboard);
+var _scoreboard_auto = require("./scoreboard_auto");var _scoreboard_auto2 = _interopRequireDefault(_scoreboard_auto);
 var _bigscreen = require("./bigscreen.js");var _bigscreen2 = _interopRequireDefault(_bigscreen);
 var _infoscreen = require("./infoscreen.js");var _infoscreen2 = _interopRequireDefault(_infoscreen);
 var _controls = require("./controls.js");var _controls2 = _interopRequireDefault(_controls);
@@ -66,6 +67,7 @@ window.getParameterByName = function (name, url) {
 
 var channel = getParameterByName("channel");
 var competition = getParameterByName("competition");
+var auto = getParameterByName("auto");
 
 if (document.body.classList.contains("bigscreen")) {
   _reactDom2.default.render(_react2.default.createElement(_bigscreen2.default, { channel: channel || 'screen' }), document.getElementById("scoreboard"));
@@ -73,6 +75,8 @@ if (document.body.classList.contains("bigscreen")) {
   _reactDom2.default.render(_react2.default.createElement(_infoscreen2.default, { competition: competition, channel: channel || 'screen' }), document.getElementById("scoreboard"));
 } else if (document.body.classList.contains("controls")) {
   _reactDom2.default.render(_react2.default.createElement(_controls2.default, { channel: channel || 'screen' }), document.getElementById("scoreboard"));
+} else if (auto == 'true') {
+  _reactDom2.default.render(_react2.default.createElement(_scoreboard_auto2.default, { competition: competition, channel: channel || 'stream' }), document.getElementById("scoreboard"));
 } else {
   _reactDom2.default.render(_react2.default.createElement(_scoreboard2.default, { competition: competition, channel: channel || 'stream' }), document.getElementById("scoreboard"));
 }
@@ -80,7 +84,6 @@ if (document.body.classList.contains("bigscreen")) {
 ___scope___.file("scoreboard.jsx", function(exports, require, module, __filename, __dirname){
 
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = require("react");var _react2 = _interopRequireDefault(_react);
-var _logos = require("./logos");var _logos2 = _interopRequireDefault(_logos);
 var _positions = require("./positions");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
 Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component);
   function Scoreboard(props) {_classCallCheck(this, Scoreboard);var _this = _possibleConstructorReturn(this, (Scoreboard.__proto__ || Object.getPrototypeOf(Scoreboard)).call(this,
@@ -92,6 +95,9 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
     _this.socket.on(_this.props.channel, function (data) {
       var competitionData =
       data[_this.props.competition] || Object.values(data)[0];
+      if (_this.filter == 'results' && competitionData) {
+        competitionData.action = "results";
+      }
       if (
       competitionData && (
       !_this.filter || new RegExp(_this.filter).test(competitionData.action)))
@@ -217,6 +223,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
                       startlist ? r.position : r.rank),
 
                     _react2.default.createElement("div", { className: "name" },
+                      _react2.default.createElement(_positions.Flag, { team: r.team }),
                       r.name.toLowerCase(),
                       r.nationality && " (" + r.nationality + ")"),
 
@@ -257,14 +264,6 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
 
         case "awards":
-          if (!data.waited) {
-            data.waited = true;
-            this.timeout = setTimeout(
-            function () {return _this2.setState({ data: data });}.bind(this),
-            2000);
-
-            return null;
-          }
           return (
             _react2.default.createElement("div", { className: "awards" },
               _react2.default.createElement("div", { className: "header" },
@@ -320,6 +319,30 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
           return _react2.default.createElement("div", null);}
 
     } }]);return Scoreboard;}(_react2.default.Component);exports.default = Scoreboard;
+});
+___scope___.file("positions.jsx", function(exports, require, module, __filename, __dirname){
+
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.
+
+
+StreamPosition = StreamPosition;exports.
+
+
+
+
+
+
+
+
+
+
+
+
+Flag = Flag;var _logos = require("./logos");var _logos2 = _interopRequireDefault(_logos);var _react = require("react");var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function StreamPosition(props) {var diver = props.diver;return _react2.default.createElement("span", { className: "position", style: { backgroundImage: _logos2.default[diver.team] && "url(" + _logos2.default[diver.team] + ")" } }, props.hidePosition ? '' : props.showRank ? diver.rank : diver.position);}function Flag(props) {
+  return (
+    _react2.default.createElement("img", { className: "flag", src: _logos2.default[props.team] }));
+
+}
 });
 ___scope___.file("logos.js", function(exports, require, module, __filename, __dirname){
 
@@ -416,24 +439,292 @@ var ddd = {
 
 EJC2017;
 });
-___scope___.file("positions.jsx", function(exports, require, module, __filename, __dirname){
+___scope___.file("scoreboard_auto.jsx", function(exports, require, module, __filename, __dirname){
 
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _createClass = function () {function defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}return function (Constructor, protoProps, staticProps) {if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;};}();var _react = require("react");var _react2 = _interopRequireDefault(_react);
+var _positions = require("./positions");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self, call) {if (!self) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call && (typeof call === "object" || typeof call === "function") ? call : self;}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;}var
+Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component);
+  function Scoreboard(props) {_classCallCheck(this, Scoreboard);var _this = _possibleConstructorReturn(this, (Scoreboard.__proto__ || Object.getPrototypeOf(Scoreboard)).call(this,
+    props));
+    document.title = props.competition;
+    _this.filter = window.getParameterByName("filter");
+    _this.state = { data: {}, slice: 1 };
+    _this.socket = io("/divecalc");
+    _this.socket.on(_this.props.channel, function (data) {
+      _this.handleData(data);
+    });return _this;
+  }_createClass(Scoreboard, [{ key: "handleData", value: function handleData(
+    data) {
+      var self = this;
+      var competitionData =
+      data[this.props.competition] || Object.values(data)[0];
+      competitionData && console.log(competitionData.action, competitionData);
+      if (this.filter == 'results' && competitionData) {
+        competitionData.action = "results";
+      }
+      if (
+      competitionData && (
+      !this.filter || new RegExp(this.filter).test(competitionData.action)))
+      {
+        if (this.lock) {
+          this.lockData = competitionData;
+          return;
+        }
+        switch (competitionData.action) {
+          case "awards":
+            this.lock = setTimeout(function () {
+              delete self.lock;
+              if (self.lockData) {
+                self.setState({
+                  data: self.lockData,
+                  slice: 1 });
+
+              }
+              delete self.lockData;
+            }, 12000);
+            setTimeout(function () {
+              self.setState({
+                data: competitionData,
+                slice: 1 });
+
+            }, 2000);
+            if (
+            competitionData.diver.position ==
+            competitionData.event.results.length)
+            {
+              setTimeout(function () {
+                competitionData.action = "results";
+                self.setState({
+                  data: competitionData,
+                  slice: 1 });
+
+              }, 7000);
+            }
+            break;
+          default:
+            self.setState({ data: competitionData, slice: 1 });
+            break;}
+
+      }
+    } }, { key: "componentWillUnmount", value: function componentWillUnmount()
+    {
+      this.socket.off(this.props.channel);
+    } }, { key: "render", value: function render()
+    {var _this2 = this;
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+        delete this.timeout;
+      }
+      //this.timeout = setTimeout((() => this.setState({ data: {} })).bind(this), 6000);
+      var data = this.state.data;
+      if (!data) {
+        return false;
+      }
+      var diver = data.diver;
+      var event = data.event;
+      switch (data.action) {
+        case "judges":
+          var panels = event.judges.panels.map(function (p) {return p.judges;});
+          var judges = [].concat.apply([], panels);
+          return (
+            _react2.default.createElement("div", { className: "standings" },
+              _react2.default.createElement("div", { className: "standingsHeader" },
+                _react2.default.createElement("div", { className: "competition" }, event.name),
+                _react2.default.createElement("div", { className: "description" }, "Judges")),
+
+              event.judges.referee &&
+              _react2.default.createElement("div", { className: "resultline" },
+                _react2.default.createElement("div", { className: "position" }),
+                _react2.default.createElement("div", { className: "name" },
+                  event.judges.referee.name.toLowerCase(),
+                  event.judges.referee.nationality &&
+                  " (" + event.judges.referee.nationality + ")"),
+
+                _react2.default.createElement("div", { className: "role" }, "Referee")),
 
 
-StreamPosition = StreamPosition;var _logos = require("./logos");var _logos2 = _interopRequireDefault(_logos);var _react = require("react");var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function StreamPosition(props) {
-  var diver = props.diver;
-  return (
-    _react2.default.createElement("span", {
-        className: "position",
-        style: {
-          backgroundImage: _logos2.default[diver.team] && "url(" + _logos2.default[diver.team] + ")" } },
+              event.judges.assistantReferee &&
+              _react2.default.createElement("div", { className: "resultline" },
+                _react2.default.createElement("div", { className: "position" }),
+                _react2.default.createElement("div", { className: "name" },
+                  event.judges.assistantReferee.name.toLowerCase(),
+                  event.judges.assistantReferee.nationality &&
+                  " (" + event.judges.assistantReferee.nationality + ")"),
+
+                _react2.default.createElement("div", { className: "role" }, "Ass. Referee")),
 
 
-      diver.position));
+              event.judges.panels.map(function (p) {
+                var prefix = p.panel;
+                var count = 0;
+                var curr = null;
+                return p.judges.map(function (j) {
+                  var postfix = j.type ? j.type == "SYNCRO" ? "S" : "E" : "";
+                  if (curr != postfix) {
+                    curr = postfix;
+                    count = 0;
+                  }
+                  count += 1;
+                  return (
+                    _react2.default.createElement("div", { className: "resultline", key: j.position },
+                      _react2.default.createElement("div", { className: "position" }),
+                      _react2.default.createElement("div", { className: "name" },
+                        j.name.toLowerCase(),
+                        j.nationality && " (" + j.nationality + ")"),
+
+                      _react2.default.createElement("div", { className: "role" },
+                        postfix, "\xA0",
+
+                        count)));
 
 
-}
+
+                });
+              }),
+              _react2.default.createElement("div", { className: "standingsFooter" }, data.competition)));
+
+
+        case "startlist":
+        case "results":
+          var startlist = data.action == "startlist";
+          var results = startlist ?
+          event.results.sort(function (a, b) {return a.position - b.position;}) :
+          event.results;
+          var size = results.length;
+          if (size > 10) {
+            var start = (this.state.slice - 1) * 10;
+            results = results.slice(start, start + 10);
+            if (start > size) {
+              if (this.filter = "results") {
+                setTimeout(function () {
+                  _this2.setState({ slice: 1 });
+                }, 10);
+              }
+              return false;
+            }
+            this.timeout = setTimeout(
+            function () {return _this2.setState({ slice: _this2.state.slice + 1 });}.bind(this),
+            5000);
+
+          }
+          return (
+            _react2.default.createElement("div", { className: "standings" },
+              _react2.default.createElement("div", { className: "standingsHeader" },
+                _react2.default.createElement("div", { className: "competition" }, event.name),
+                _react2.default.createElement("div", { className: "description" },
+                  startlist ? "Start list" : "Results round " + event.round)),
+
+
+              results.map(function (r, i) {return (
+                  _react2.default.createElement("div", { className: "resultline", key: i },
+                    _react2.default.createElement("div", { className: "position" },
+                      startlist ? r.position : r.rank),
+
+                    _react2.default.createElement("div", { className: "name" },
+                      _react2.default.createElement(_positions.Flag, { team: r.team }),
+                      r.name.toLowerCase(),
+                      r.nationality && " (" + r.nationality + ")"),
+
+                    !startlist && _react2.default.createElement("div", { className: "points" }, r.result)));}),
+
+
+              _react2.default.createElement("div", { className: "standingsFooter" }, data.competition)));
+
+
+        case "dive":
+          var self = this;
+          self.timeout = setTimeout(function () {
+            self.setState({ data: null, slice: 1 });
+          }, 5000);
+          return (
+            _react2.default.createElement("div", { className: "dive" },
+              _react2.default.createElement("div", { className: "header" },
+                _react2.default.createElement(_positions.StreamPosition, { diver: diver }),
+                _react2.default.createElement("span", { className: "name" },
+                  " " + diver.name.toLowerCase(),
+                  diver.nationality && " (" + diver.nationality + ")")),
+
+
+              _react2.default.createElement("div", { className: "data" },
+                _react2.default.createElement("div", { className: "item" },
+                  _react2.default.createElement("div", null, "Round ",
+                    event.round, "/", event.rounds)),
+
+
+                _react2.default.createElement("div", { className: "item" },
+                  _react2.default.createElement("div", null, "Dive ", diver.dive.dive),
+                  _react2.default.createElement("div", null, "DD ", diver.dive.dd))),
+
+
+              _react2.default.createElement("div", { className: "data" },
+                _react2.default.createElement("div", { className: "item" },
+                  _react2.default.createElement("div", null, "Current rank"),
+                  _react2.default.createElement("div", null, diver.rank)),
+
+                _react2.default.createElement("div", { className: "item" }))));
+
+
+
+        case "awards":
+          var self = this;
+          self.timeout = setTimeout(function () {
+            self.setState({ data: null, slice: 1 });
+          }, 5000);
+          return (
+            _react2.default.createElement("div", { className: "awards" },
+              _react2.default.createElement("div", { className: "header" },
+                _react2.default.createElement(_positions.StreamPosition, { diver: diver }),
+                _react2.default.createElement("span", { className: "name" },
+                  " " + diver.name.toLowerCase(),
+                  diver.nationality && " (" + diver.nationality + ")")),
+
+
+              _react2.default.createElement("div", { className: "data" },
+                _react2.default.createElement("div", { className: "item" },
+                  _react2.default.createElement("div", null, "Round ",
+                    event.round, "/", event.rounds),
+
+                  _react2.default.createElement("div", null, "Current rank: ", diver.rank)),
+
+                _react2.default.createElement("div", { className: "item" },
+                  _react2.default.createElement("div", null, "Dive ",
+                    _react2.default.createElement("strong", null, diver.dive.result)),
+
+                  _react2.default.createElement("div", null, "Total ",
+                    _react2.default.createElement("strong", null, diver.result)))),
+
+
+
+              _react2.default.createElement("div", { className: "data judgeAwards" },
+                diver.dive.effectiveAwards.map(function (a, i) {return (
+                    _react2.default.createElement("div", { className: "judgeAward", key: i },
+                      a));})),
+
+
+
+              !/0[,.]0/.test(diver.dive.penalty) ||
+              diver.dive.maxAward != "10" ?
+              _react2.default.createElement("div", { className: "data judgeAwards" },
+                _react2.default.createElement("div", { className: "judgeAward" },
+                  !/0[,.]0/.test(diver.dive.penalty) &&
+                  _react2.default.createElement("div", null, "Penalty: ", diver.dive.penalty)),
+
+
+                _react2.default.createElement("div", { className: "judgeAward" },
+                  diver.dive.maxAward != "10" &&
+                  _react2.default.createElement("div", null, "Max Award: ", diver.dive.maxAward))) :
+
+
+
+
+              false));
+
+
+
+        default:
+          return _react2.default.createElement("div", null);}
+
+    } }]);return Scoreboard;}(_react2.default.Component);exports.default = Scoreboard;
 });
 ___scope___.file("bigscreen.js", function(exports, require, module, __filename, __dirname){
 
@@ -975,7 +1266,7 @@ Control = function (_React$Component2) {_inherits(Control, _React$Component2);
 });
 ___scope___.file("scoreboard.scss", function(exports, require, module, __filename, __dirname){
 
-__fsbx_css("scoreboard.scss", "@import url(\"https://fonts.googleapis.com/css?family=Roboto\");\n* {\n  box-sizing: border-box; }\n\nbody {\n  font-size: 28px;\n  font-family: roboto; }\n  body.bigscreen {\n    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(\"/img/ado.jpg\") no-repeat;\n    background-size: auto, cover; }\n\ndiv.bigscreen .standings {\n  width: 94vw;\n  height: 90vh;\n  position: absolute;\n  left: 3vw;\n  top: 3vh;\n  display: flex;\n  flex-direction: column; }\n  div.bigscreen .standings:first-child:not(:last-child),\n  div.bigscreen .standings + .standings {\n    left: 1vw;\n    width: 47vw;\n    font-size: 0.96em; }\n    div.bigscreen .standings:first-child:not(:last-child) .divename,\n    div.bigscreen .standings + .standings .divename {\n      display: none; }\n    div.bigscreen .standings:first-child:not(:last-child) .diver .name,\n    div.bigscreen .standings + .standings .diver .name {\n      font-size: 1em; }\n  div.bigscreen .standings + .standings {\n    left: 51vw; }\n  div.bigscreen .standings .spacer {\n    flex: 1; }\n  div.bigscreen .standings .standingsHeader {\n    position: relative;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    background-size: 100%;\n    margin-left: 100px;\n    min-height: 100px;\n    padding: 0;\n    padding-left: 20px;\n    color: inherit;\n    border-radius: 0 50px 50px 0;\n    display: flex;\n    flex-direction: column;\n    justify-content: center; }\n    div.bigscreen .standings .standingsHeader:before {\n      content: \"\";\n      position: absolute;\n      width: 100px;\n      height: 100px;\n      background: url(/img/BStKlogo.svg);\n      background-size: cover;\n      left: -100px; }\n  div.bigscreen .standings .standingsFooter {\n    background: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 0 20px;\n    color: white;\n    margin-top: 4px;\n    width: 100%;\n    height: 80px;\n    border-radius: 40px;\n    line-height: 80px;\n    position: absolute;\n    bottom: 0; }\n  div.bigscreen .standings .whiteline {\n    margin: 6px 30px 0;\n    height: 44px;\n    border-radius: 22px;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    align-items: center;\n    display: flex;\n    padding-left: 20px; }\n    div.bigscreen .standings .whiteline.awardline {\n      padding-left: 0;\n      justify-content: space-around; }\n  div.bigscreen .standings .resultline {\n    margin: 6px 30px 0;\n    padding-left: 0;\n    border-radius: 22px;\n    height: 44px; }\n    div.bigscreen .standings .resultline .position {\n      border-radius: 22px;\n      width: 44px;\n      height: 44px;\n      line-height: 44px; }\n  div.bigscreen .standings .diver {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    display: flex;\n    border-radius: 50px;\n    justify-content: space-between;\n    overflow: hidden; }\n    div.bigscreen .standings .diver .name {\n      flex: 1;\n      font-size: 1.3em;\n      align-self: center;\n      text-transform: capitalize; }\n    div.bigscreen .standings .diver .round {\n      align-self: center;\n      padding: 0px 20px; }\n    div.bigscreen .standings .diver .position {\n      height: 100px;\n      width: 100px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.5em;\n      background-size: cover; }\n    div.bigscreen .standings .diver .bsdive {\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      padding-right: 30px;\n      text-align: center; }\n      div.bigscreen .standings .diver .bsdive .code {\n        font-size: 40px; }\n\n.position {\n  display: inline-block;\n  background: #fbc525;\n  height: 36px;\n  width: 36px;\n  text-align: center;\n  line-height: 36px;\n  font-size: 20px;\n  margin-right: 10px; }\n\n.standings {\n  -webkit-app-region: drag;\n  width: 70vw;\n  height: 80vh;\n  position: absolute;\n  left: 15vw;\n  bottom: 5vh; }\n  .standings .standingsHeader {\n    background-image: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 10px 20px;\n    color: white; }\n    .standings .standingsHeader .competition {\n      font-size: 1.4em;\n      margin-bottom: 10px; }\n    .standings .standingsHeader .description {\n      font-size: 1.1em; }\n  .standings .standingsFooter {\n    background: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 4px 20px;\n    color: white;\n    margin-top: 4px; }\n  .standings .resultline {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    padding: 0 20px;\n    margin-top: 4px;\n    display: flex;\n    height: 36px;\n    align-items: center; }\n    .standings .resultline .name {\n      flex: 1;\n      text-transform: capitalize; }\n\n.dive,\n.awards {\n  -webkit-app-region: drag;\n  width: 80vw;\n  margin: 0 10vw;\n  position: absolute;\n  bottom: 5vh; }\n  .dive .header,\n  .awards .header {\n    font-size: 1em;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8)); }\n    .dive .header .position,\n    .awards .header .position {\n      margin-right: 10px;\n      height: 48px;\n      width: 48px;\n      line-height: 48px;\n      font-size: 28px; }\n    .dive .header .name,\n    .awards .header .name {\n      text-transform: capitalize; }\n  .dive .data,\n  .awards .data {\n    display: flex;\n    flex-wrap: wrap; }\n    .dive .data .item,\n    .awards .data .item {\n      background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n      margin-top: 4px;\n      padding: 4px 20px 4px 10px;\n      width: 50%;\n      display: flex;\n      justify-content: space-between; }\n      .dive .data .item:nth-child(odd),\n      .awards .data .item:nth-child(odd) {\n        padding: 4px 10px 4px 20px;\n        width: calc(50% - 4px);\n        margin-right: 4px; }\n\n.awards .data .item {\n  justify-content: space-around; }\n\n.awards .data.judgeAwards {\n  margin-top: 4px;\n  background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n  padding: 4px 0;\n  justify-content: space-around; }\n\n/*# sourceMappingURL=scoreboard.scss.map */");
+__fsbx_css("scoreboard.scss", "@import url(\"https://fonts.googleapis.com/css?family=Roboto\");\n* {\n  box-sizing: border-box; }\n\nbody {\n  font-size: 28px;\n  font-family: roboto;\n  background: url(/img/ado.jpg);\n  background-size: cover; }\n  body.bigscreen {\n    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(\"/img/ado.jpg\") no-repeat;\n    background-size: auto, cover; }\n\ndiv.bigscreen .standings {\n  width: 94vw;\n  height: 90vh;\n  position: absolute;\n  left: 3vw;\n  top: 3vh;\n  display: flex;\n  flex-direction: column; }\n  div.bigscreen .standings:first-child:not(:last-child),\n  div.bigscreen .standings + .standings {\n    left: 1vw;\n    width: 47vw;\n    font-size: 0.96em; }\n    div.bigscreen .standings:first-child:not(:last-child) .divename,\n    div.bigscreen .standings + .standings .divename {\n      display: none; }\n    div.bigscreen .standings:first-child:not(:last-child) .diver .name,\n    div.bigscreen .standings + .standings .diver .name {\n      font-size: 1em; }\n  div.bigscreen .standings + .standings {\n    left: 51vw; }\n  div.bigscreen .standings .spacer {\n    flex: 1; }\n  div.bigscreen .standings .standingsHeader {\n    position: relative;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    background-size: 100%;\n    margin-left: 100px;\n    min-height: 100px;\n    padding: 0;\n    padding-left: 20px;\n    color: inherit;\n    border-radius: 0 50px 50px 0;\n    display: flex;\n    flex-direction: column;\n    justify-content: center; }\n    div.bigscreen .standings .standingsHeader:before {\n      content: \"\";\n      position: absolute;\n      width: 100px;\n      height: 100px;\n      background: url(/img/BStKlogo.svg);\n      background-size: cover;\n      left: -100px; }\n  div.bigscreen .standings .standingsFooter {\n    background: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 0 20px;\n    color: white;\n    margin-top: 4px;\n    width: 100%;\n    height: 80px;\n    border-radius: 40px;\n    line-height: 80px;\n    position: absolute;\n    bottom: 0; }\n  div.bigscreen .standings .whiteline {\n    margin: 6px 30px 0;\n    height: 44px;\n    border-radius: 22px;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    align-items: center;\n    display: flex;\n    padding-left: 20px; }\n    div.bigscreen .standings .whiteline.awardline {\n      padding-left: 0;\n      justify-content: space-around; }\n  div.bigscreen .standings .resultline {\n    margin: 6px 30px 0;\n    padding-left: 0;\n    border-radius: 22px;\n    height: 44px; }\n    div.bigscreen .standings .resultline .position {\n      border-radius: 22px;\n      width: 44px;\n      height: 44px;\n      line-height: 44px; }\n  div.bigscreen .standings .diver {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    display: flex;\n    border-radius: 50px;\n    justify-content: space-between;\n    overflow: hidden; }\n    div.bigscreen .standings .diver .name {\n      flex: 1;\n      font-size: 1.3em;\n      align-self: center;\n      text-transform: capitalize; }\n    div.bigscreen .standings .diver .round {\n      align-self: center;\n      padding: 0px 20px; }\n    div.bigscreen .standings .diver .position {\n      height: 100px;\n      width: 100px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.5em;\n      background-size: cover; }\n    div.bigscreen .standings .diver .bsdive {\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      padding-right: 30px;\n      text-align: center; }\n      div.bigscreen .standings .diver .bsdive .code {\n        font-size: 40px; }\n\n.position {\n  display: inline-block;\n  height: 36px;\n  width: 36px;\n  text-align: center;\n  line-height: 36px;\n  font-size: 20px;\n  margin-right: 10px;\n  color: white;\n  text-shadow: 0 0 3px #000; }\n\n.standings {\n  -webkit-app-region: drag;\n  width: 70vw;\n  height: 80vh;\n  position: absolute;\n  left: 15vw;\n  bottom: 5vh; }\n  .standings .standingsHeader {\n    background-image: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 10px 20px;\n    color: white; }\n    .standings .standingsHeader .competition {\n      font-size: 1.4em;\n      margin-bottom: 10px; }\n    .standings .standingsHeader .description {\n      font-size: 1.1em; }\n  .standings .standingsFooter {\n    background: linear-gradient(to right, #73adc1, rgba(115, 173, 193, 0.8));\n    padding: 4px 20px;\n    color: white;\n    margin-top: 4px; }\n  .standings .resultline {\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    padding-right: 20px;\n    margin-top: 4px;\n    display: flex;\n    height: 36px;\n    align-items: center; }\n    .standings .resultline .name {\n      display: flex;\n      align-items: center;\n      flex: 1;\n      text-transform: capitalize; }\n      .standings .resultline .name .flag {\n        max-height: 28px;\n        margin-right: 10px; }\n    .standings .resultline .position {\n      color: black;\n      text-shadow: none; }\n\n.dive,\n.awards {\n  -webkit-app-region: drag;\n  width: 80vw;\n  margin: 0 10vw;\n  position: absolute;\n  bottom: 5vh; }\n  .dive .header,\n  .awards .header {\n    font-size: 1em;\n    background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n    border-radius: 30px 0 0 30px; }\n    .dive .header .position,\n    .awards .header .position {\n      margin-right: 10px;\n      height: 60px;\n      width: 60px;\n      line-height: 60px;\n      font-size: 36px; }\n    .dive .header .name,\n    .awards .header .name {\n      text-transform: capitalize; }\n  .dive .data,\n  .awards .data {\n    display: flex;\n    flex-wrap: wrap; }\n    .dive .data .item,\n    .awards .data .item {\n      background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n      margin-top: 4px;\n      padding: 4px 20px 4px 10px;\n      width: 50%;\n      display: flex;\n      justify-content: space-between; }\n      .dive .data .item:nth-child(odd),\n      .awards .data .item:nth-child(odd) {\n        padding: 4px 10px 4px 20px;\n        width: calc(50% - 4px);\n        margin-right: 4px; }\n\n.awards .data .item {\n  justify-content: space-around; }\n\n.awards .data.judgeAwards {\n  margin-top: 4px;\n  background: linear-gradient(to right, white, rgba(255, 255, 255, 0.8));\n  padding: 4px 0;\n  justify-content: space-around; }\n\n/*# sourceMappingURL=scoreboard.scss.map */");
 });
 });
 FuseBox.pkg("fusebox-hot-reload", {}, function(___scope___){

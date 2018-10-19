@@ -10,7 +10,12 @@ export function StreamPosition(props) {
           backgroundImage: logos[diver.team] && "url(" + logos[diver.team] + ")"
         }}
       >
-        {diver.position}
+        {props.hidePosition ? '' : props.showRank ? diver.rank : diver.position}
       </span>
     );
+}
+export function Flag(props){
+  return(
+    <img className="flag" src={logos[props.team]} />
+  )
 }
