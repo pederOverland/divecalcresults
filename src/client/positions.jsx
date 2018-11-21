@@ -7,7 +7,8 @@ export function StreamPosition(props) {
       <span
         className="position"
         style={{
-          backgroundImage: logos[diver.team] && "url(" + logos[diver.team] + ")"
+          backgroundImage: logos[diver.team] && "url(" + (props.override || logos[diver.team]) + ")",
+          backgroundSize: '100%'
         }}
       >
         {props.hidePosition ? '' : props.showRank ? diver.rank : diver.position}
@@ -16,6 +17,6 @@ export function StreamPosition(props) {
 }
 export function Flag(props){
   return(
-    <img className="flag" src={logos[props.team]} />
+    <img className="flag" src={props.override || logos[props.team]} />
   )
 }
