@@ -1,4 +1,4 @@
-const BO = {
+export const BO = {
   "B/S": "/img/flags/norway.svg",
   "BS.": "/img/flags/norway.svg",
   "Cz.": "/img/flags/czech-republic.svg",
@@ -46,7 +46,7 @@ const BO = {
   VanDi: "/img/flags/finland.svg",
   VSS: "/img/flags/sweden.svg",
 };
-const EJC2017 = {
+export const EJC2017 = {
   "BaS": "/img/Bas.png",
   "BSt": "/img/BStKlogo.svg",
   "Kle": "/img/Kle.png",
@@ -86,7 +86,7 @@ const EJC2017 = {
   UKR: "/img/flags/ukraine.svg"
 };
 
-const ddd = {
+export const ddd = {
   DDD: "/img/dods.svg"
 }
 

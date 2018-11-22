@@ -5,14 +5,15 @@ export default class Scoreboard extends React.Component {
     super(props);
     document.title = props.competition;
     this.filter = window.getParameterByName("filter");
+    this.dead = window.getParameterByName("dead");
     this.state = { data: {}, slice: 1 };
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
       const competitionData =
         data[this.props.competition] || Object.values(data)[0];
-        if(this.filter == 'results' && competitionData){
-          competitionData.action = "results";
-        }
+      if (this.filter == "results" && competitionData) {
+        competitionData.action = "results";
+      }
       if (
         competitionData &&
         (!this.filter || new RegExp(this.filter).test(competitionData.action))
@@ -138,7 +139,7 @@ export default class Scoreboard extends React.Component {
                   {startlist ? r.position : r.rank}
                 </div>
                 <div className="name">
-                  <Flag team={r.team} />
+                  <Flag team={r.team} override={this.dead ? '/img/dods.svg' : false} />
                   {r.name.toLowerCase()}
                   {r.nationality && " (" + r.nationality + ")"}
                 </div>
@@ -152,37 +153,41 @@ export default class Scoreboard extends React.Component {
         return (
           <div className="dive">
             <div className="header">
-              <StreamPosition diver={diver} />
+              <StreamPosition diver={diver} override={this.dead ? '/img/dods.svg' :false} />
               <span className="name">
                 {" " + diver.name.toLowerCase()}
                 {diver.nationality && " (" + diver.nationality + ")"}
               </span>
             </div>
-            <div className="data">
-              <div className="item">
-                <div>
-                  Round {event.round}/{event.rounds}
+            {!this.dead && (
+              <div className="data">
+                <div className="item">
+                  <div>
+                    Round {event.round}/{event.rounds}
+                  </div>
+                </div>
+                <div className="item">
+                  <div>Dive {diver.dive.dive}</div>
+                  <div>DD {diver.dive.dd}</div>
                 </div>
               </div>
-              <div className="item">
-                <div>Dive {diver.dive.dive}</div>
-                <div>DD {diver.dive.dd}</div>
+            )}
+            {!this.dead && (
+              <div className="data">
+                <div className="item">
+                  <div>Current rank</div>
+                  <div>{diver.rank}</div>
+                </div>
+                <div className="item" />
               </div>
-            </div>
-            <div className="data">
-              <div className="item">
-                <div>Current rank</div>
-                <div>{diver.rank}</div>
-              </div>
-              <div className="item" />
-            </div>
+            )}
           </div>
         );
       case "awards":
         return (
           <div className="awards">
             <div className="header">
-              <StreamPosition diver={diver} />
+              <StreamPosition diver={diver} override={this.dead ? '/img/dods.svg' :false} />
               <span className="name">
                 {" " + diver.name.toLowerCase()}
                 {diver.nationality && " (" + diver.nationality + ")"}

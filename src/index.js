@@ -16,6 +16,7 @@ const io = new IO({
 const state = {};
 
 router.post("/data/:channel", ctx => {
+  console.log(ctx)
   state[ctx.params.channel] = state[ctx.params.channel] || {};
   state[ctx.params.channel][ctx.request.body.event.name] = ctx.request.body;
   state[ctx.params.channel][ctx.request.body.event.name].transmitted = new Date().getTime();
