@@ -4,7 +4,8 @@ import Board from "./scoreboard";
 import AutoBoard from "./scoreboard_auto";
 import Screen from "./bigscreen.js";
 import InfoScreen from "./infoscreen.js";
-import Controls from "./controls.js";
+import Controls from "./controls.jsx";
+import Commercial from "./commercial.jsx";
 import "./scoreboard.scss";
 
 window.getParameterByName = function(name, url) {
@@ -34,4 +35,9 @@ if (document.body.classList.contains("bigscreen")) {
   ReactDOM.render(<AutoBoard competition={competition} channel={channel || 'stream'} />, document.getElementById("scoreboard"));
 } else {
   ReactDOM.render(<Board competition={competition} channel={channel || 'stream'} />, document.getElementById("scoreboard"));
+}
+
+const commercial = document.getElementById("commercial");
+if(commercial){
+  ReactDOM.render(<Commercial channel={channel || "screen"} />, commercial)
 }
