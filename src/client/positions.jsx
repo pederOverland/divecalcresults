@@ -3,11 +3,12 @@ import React from "react";
 
 export function StreamPosition(props) {
     const diver = props.diver;
+    console.log(props)
     return (
       <span
         className="position"
         style={{
-          backgroundImage: logos[diver.team] && "url(" + (props.override || logos[diver.team]) + ")",
+          backgroundImage: (logos[diver.team] || props.override) && "url(" + (props.override || logos[diver.team]) + ")",
           backgroundSize: '100%'
         }}
       >

@@ -91,7 +91,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
     props));
     document.title = props.competition;
     _this.filter = window.getParameterByName("filter");
-    _this.dead = window.getParameterByName("dead");
+    _this.dead = window.getParameterByName("dods");
     _this.state = { data: {}, slice: 1 };
     _this.socket = io("/divecalc");
     _this.socket.on(_this.props.channel, function (data) {
@@ -345,7 +345,8 @@ StreamPosition = StreamPosition;exports.
 
 
 
-Flag = Flag;var _logos = require("./logos");var _logos2 = _interopRequireDefault(_logos);var _react = require("react");var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function StreamPosition(props) {var diver = props.diver;return _react2.default.createElement("span", { className: "position", style: { backgroundImage: _logos2.default[diver.team] && "url(" + (props.override || _logos2.default[diver.team]) + ")", backgroundSize: '100%' } }, props.hidePosition ? '' : props.showRank ? diver.rank : diver.position);}function Flag(props) {
+
+Flag = Flag;var _logos = require("./logos");var _logos2 = _interopRequireDefault(_logos);var _react = require("react");var _react2 = _interopRequireDefault(_react);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function StreamPosition(props) {var diver = props.diver;console.log(props);return _react2.default.createElement("span", { className: "position", style: { backgroundImage: (_logos2.default[diver.team] || props.override) && "url(" + (props.override || _logos2.default[diver.team]) + ")", backgroundSize: '100%' } }, props.hidePosition ? '' : props.showRank ? diver.rank : diver.position);}function Flag(props) {
   return (
     _react2.default.createElement("img", { className: "flag", src: props.override || _logos2.default[props.team] }));
 
@@ -456,7 +457,8 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
     props));
     document.title = props.competition;
     _this.filter = window.getParameterByName("filter");
-    _this.dead = window.getParameterByName("dead");
+    window.dead = !!window.getParameterByName("dods");
+    console.log(window.getParameterByName('dods'));
     _this.state = { data: {}, slice: 1 };
     _this.socket = io("/divecalc");
     _this.socket.on(_this.props.channel, function (data) {
@@ -632,7 +634,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
                     _react2.default.createElement("div", { className: "name" },
                       _react2.default.createElement(_positions.Flag, {
                         team: r.team,
-                        override: _this2.dead ? "/img/dods.svg" : false }),
+                        override: window.dead ? "/img/dods.svg" : false }),
 
                       r.name.toLowerCase(),
                       r.nationality && " (" + r.nationality + ")"),
@@ -648,19 +650,20 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
           self.timeout = setTimeout(function () {
             self.setState({ data: null, slice: 1 });
           }, 5000);
+          console.log(window.dead);
           return (
             _react2.default.createElement("div", { className: "dive" },
               _react2.default.createElement("div", { className: "header" },
                 _react2.default.createElement(_positions.StreamPosition, {
                   diver: diver,
-                  override: this.dead ? "/img/dods.svg" : false }),
+                  override: window.dead ? "/img/dods.svg" : false }),
 
                 _react2.default.createElement("span", { className: "name" },
                   " " + diver.name.toLowerCase(),
                   diver.nationality && " (" + diver.nationality + ")")),
 
 
-              !this.dead &&
+              !window.dead &&
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
                   _react2.default.createElement("div", null, "Round ",
@@ -673,7 +676,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
 
 
 
-              !this.dead &&
+              !window.dead &&
               _react2.default.createElement("div", { className: "data" },
                 _react2.default.createElement("div", { className: "item" },
                   _react2.default.createElement("div", null, "Current rank"),
@@ -694,7 +697,7 @@ Scoreboard = function (_React$Component) {_inherits(Scoreboard, _React$Component
               _react2.default.createElement("div", { className: "header" },
                 _react2.default.createElement(_positions.StreamPosition, {
                   diver: diver,
-                  override: this.dead ? "/img/dods.svg" : false }),
+                  override: window.dead ? "/img/dods.svg" : false }),
 
                 _react2.default.createElement("span", { className: "name" },
                   " " + diver.name.toLowerCase(),

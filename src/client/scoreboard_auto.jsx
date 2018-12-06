@@ -5,7 +5,8 @@ export default class Scoreboard extends React.Component {
     super(props);
     document.title = props.competition;
     this.filter = window.getParameterByName("filter");
-    this.dead = window.getParameterByName("dead");
+    window.dead = !!window.getParameterByName("dods");
+    console.log(window.getParameterByName('dods'));
     this.state = { data: {}, slice: 1 };
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
@@ -181,7 +182,7 @@ export default class Scoreboard extends React.Component {
                 <div className="name">
                   <Flag
                     team={r.team}
-                    override={this.dead ? "/img/dods.svg" : false}
+                    override={window.dead ? "/img/dods.svg" : false}
                   />
                   {r.name.toLowerCase()}
                   {r.nationality && " (" + r.nationality + ")"}
@@ -197,19 +198,20 @@ export default class Scoreboard extends React.Component {
         self.timeout = setTimeout(() => {
           self.setState({ data: null, slice: 1 });
         }, 5000);
+        console.log(window.dead)
         return (
           <div className="dive">
             <div className="header">
               <StreamPosition
                 diver={diver}
-                override={this.dead ? "/img/dods.svg" : false}
+                override={window.dead ? "/img/dods.svg" : false}
               />
               <span className="name">
                 {" " + diver.name.toLowerCase()}
                 {diver.nationality && " (" + diver.nationality + ")"}
               </span>
             </div>
-            {!this.dead && (
+            {!window.dead && (
               <div className="data">
                 <div className="item">
                   <div>
@@ -222,7 +224,7 @@ export default class Scoreboard extends React.Component {
                 </div>
               </div>
             )}
-            {!this.dead && (
+            {!window.dead && (
               <div className="data">
                 <div className="item">
                   <div>Current rank</div>
@@ -243,7 +245,7 @@ export default class Scoreboard extends React.Component {
             <div className="header">
               <StreamPosition
                 diver={diver}
-                override={this.dead ? "/img/dods.svg" : false}
+                override={window.dead ? "/img/dods.svg" : false}
               />
               <span className="name">
                 {" " + diver.name.toLowerCase()}

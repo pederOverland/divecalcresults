@@ -5,7 +5,7 @@ export default class Scoreboard extends React.Component {
     super(props);
     document.title = props.competition;
     this.filter = window.getParameterByName("filter");
-    this.dead = window.getParameterByName("dead");
+    this.dead = window.getParameterByName("dods");
     this.state = { data: {}, slice: 1 };
     this.socket = io("/divecalc");
     this.socket.on(this.props.channel, data => {
