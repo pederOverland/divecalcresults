@@ -27,7 +27,7 @@ router.post("/data/:channel", ctx => {
 app
   .use(
     bodyParser({
-      detectJSON: function(ctx) {
+      detectJSON: function (ctx) {
         return true;
       }
     })
@@ -45,6 +45,10 @@ io.on("connection", (ctx, data) => {
 
 io.on("command", (ctx, data) => {
   switch (data.command) {
+    case "commercial":
+      console.log(data.channel + "_commercial", data);
+      io.broadcast(data.channel + "_commercial", data);
+      break;
     case "clearAll":
       state[data.channel || 'screen'] = {};
     case "clear":
@@ -55,5 +59,4 @@ io.on("command", (ctx, data) => {
 });
 
 app.listen(config.port);
-
 notifier.notify("Listening on " + config.port);

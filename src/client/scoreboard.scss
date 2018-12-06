@@ -8,9 +8,26 @@ $inner-padding: 10px;
 body {
     font-size: 28px;
     font-family: roboto;
+    overflow: hidden;
     &.bigscreen {
         background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/img/ado.jpg") no-repeat;
         background-size: auto, cover;
+    }
+}
+
+.commercial{
+    position: absolute;
+    background: white;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left:0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    img{
+        max-width: 60%;
     }
 }
 
