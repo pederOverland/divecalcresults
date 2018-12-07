@@ -40,7 +40,7 @@ export default class Scoreboard extends React.Component {
               });
             }
             delete self.lockData;
-          }, 12000);
+          }, 7000);
           setTimeout(function() {
             self.setState({
               data: competitionData,
@@ -57,7 +57,7 @@ export default class Scoreboard extends React.Component {
                 data: competitionData,
                 slice: 1
               });
-            }, 7000);
+            }, 5000);
           }
           break;
         default:
