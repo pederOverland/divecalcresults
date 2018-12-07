@@ -17,8 +17,6 @@ module.exports = {
   deploy: {
     // "production" is the environment name
     production: {
-      // SSH key path, default to $HOME/.ssh
-      key: "/path/to/some.pem",
       // SSH user
       user: "peder",
       // SSH host
@@ -29,7 +27,7 @@ module.exports = {
       // GIT remote/branch
       ref: "origin/master",
       // GIT remote
-      repo: "git@github.com:pederOverland/divecalcresults.git",
+      repo: "https://github.com/pederOverland/divecalcresults.git",
       // path in the server
       path: "/var/www/divecalcresults",
       // Pre-setup command or path to a script on your local machine
