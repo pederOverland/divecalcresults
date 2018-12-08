@@ -197,7 +197,7 @@ export default class Scoreboard extends React.Component {
         var self = this;
         self.timeout = setTimeout(() => {
           self.setState({ data: null, slice: 1 });
-        }, 5000);
+        }, 3000);
         console.log(window.dead)
         return (
           <div className="dive">
@@ -239,7 +239,7 @@ export default class Scoreboard extends React.Component {
         var self = this;
         self.timeout = setTimeout(() => {
           self.setState({ data: null, slice: 1 });
-        }, 5000);
+        }, 3000);
         return (
           <div className="awards">
             <div className="header">
