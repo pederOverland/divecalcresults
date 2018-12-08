@@ -6,7 +6,7 @@ const bodyParser = require("koa-bodyparser");
 const Router = require("koa-router");
 const notifier = require("node-notifier");
 const _ = require("lodash");
-const config = { tcpPort: 9090, port: 9000 };
+const config = { tcpPort: 9090, port: process.env.port || 9000 };
 
 const app = new Koa();
 const router = new Router();
