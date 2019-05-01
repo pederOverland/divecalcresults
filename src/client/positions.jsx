@@ -3,7 +3,6 @@ import React from "react";
 
 export function StreamPosition(props) {
     const diver = props.diver;
-    console.log(props)
     return (
       <span
         className="position"
