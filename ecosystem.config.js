@@ -10,7 +10,7 @@ module.exports = {
       script: "src/index.js",
       env: {
         NODE_ENV: "screen",
-        port: 10000
+        port: 9000
       },
     }
   ],

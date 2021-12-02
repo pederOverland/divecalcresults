@@ -139,7 +139,7 @@ export default class Scoreboard extends React.Component {
                   {startlist ? r.position : r.rank}
                 </div>
                 <div className="name">
-                  <Flag team={r.team} override={this.dead ? '/img/dods.svg' : false} />
+                  <Flag team={r.nationality || r.team} override={this.dead ? '/img/dods.svg' : false} />
                   {r.name.toLowerCase()}
                   {r.nationality && " (" + r.nationality + ")"}
                 </div>

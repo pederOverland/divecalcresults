@@ -40,7 +40,7 @@ export default class Scoreboard extends React.Component {
               });
             }
             delete self.lockData;
-          }, 7000);
+          }, 9000);
           setTimeout(function() {
             self.setState({
               data: competitionData,
@@ -181,7 +181,7 @@ export default class Scoreboard extends React.Component {
                 </div>
                 <div className="name">
                   <Flag
-                    team={r.team}
+                    team={r.nationality || r.team}
                     override={window.dead ? "/img/dods.svg" : false}
                   />
                   {r.name.toLowerCase()}

@@ -83,6 +83,8 @@ export const EJC2017 = {
   SUI: "/img/flags/switzerland.svg",
   SWE: "/img/flags/sweden.svg",
   TUR: "/img/flags/turkey.svg",
+  RSA: "/img/flags/south-africa.svg",
+  AUS: "/img/flags/australia.svg",
   UKR: "/img/flags/ukraine.svg"
 };
 
