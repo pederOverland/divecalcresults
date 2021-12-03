@@ -94,7 +94,8 @@ export const EJC2017 = {
 };
 
 export const ddd = {
-  DDD: "/img/dods.svg"
+  DDD: "/img/dods.svg",
+  BDD: "/img/bgdods.png"
 };
 
-export default EJC2017;
+export default ddd;
